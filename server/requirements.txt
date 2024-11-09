@@ -1,7 +1,8 @@
-Flask
-Flask-Cors
-psycopg2-binary
-bcrypt
-python-dotenv
-psycopg2
-pyjwt
+Flask==3.0.3
+Flask-Cors==5.0.0
+psycopg2-binary==2.9.10
+bcrypt==4.2.0
+python-dotenv==1.0.1
+psycopg2==2.9.10
+pyjwt==2.9.0
+Werkzeug==3.0.4

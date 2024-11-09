@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask import session
 import psycopg2
 import bcrypt
-from db import get_db_connection 
+# from db import get_db_connection 
 from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 from dotenv import load_dotenv
@@ -12,13 +12,26 @@ import jwt
 from datetime import datetime, timedelta, timezone
 
 app = Flask(__name__)
-CORS(app)
+CORS(app) 
 
 
 load_dotenv()
 SECRET_KEY=os.getenv("SECRET_KEY")
 app.config['SECRET_KEY'] = SECRET_KEY
 PORT=8000
+
+# load environment variables
+load_dotenv()
+
+def get_db_connection():
+    conn = psycopg2.connect(
+        host="localhost",
+        database="moviemuse",
+        user=os.getenv("USER"),
+        password=os.getenv("PASSWORD"),
+        port="5433" 
+    )
+    return conn
 
 
 def decode_token(token):
