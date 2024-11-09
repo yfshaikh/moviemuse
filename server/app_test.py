@@ -1,5 +1,5 @@
 import unittest
-from app import app
+from moviemuse.server.server_deployment.app import app
 
 class MovieSearchTestCase(unittest.TestCase):
     def setUp(self):
