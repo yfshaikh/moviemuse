@@ -28,6 +28,7 @@ function Navbar() {
     const file = e.target.files[0];
     if (file) {
       updatePfp(file); 
+      console.log(pfp)
     }
   };
 
