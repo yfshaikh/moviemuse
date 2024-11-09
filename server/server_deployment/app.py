@@ -24,8 +24,16 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    database_url = os.getenv('DEPLOYED_DATABASE_URL')
-    conn = psycopg2.connect(database_url)
+    if os.getenv('DATABASE_URL') is None:
+        conn = psycopg2.connect(
+            host="localhost",  
+            database="moviemuse",  
+            user=os.getenv("USER"),  
+            password=os.getenv("PASSWORD"),  
+            port="5433"  
+        )
+    else:
+        conn = psycopg2.connect(os.getenv('DATABASE_URL'))  # Vercel's connection string
 
     return conn
 
