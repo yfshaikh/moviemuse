@@ -33,7 +33,13 @@ def get_db_connection():
             port="5433"  
         )
     else:
-        conn = psycopg2.connect(os.getenv('DATABASE_URL'))  # Vercel's connection string
+        conn = psycopg2.connect(
+            host=os.getenv("POSTGRES_HOST"),
+            database=os.getenv("POSTGRES_DATABASE"),  
+            user=os.getenv("POSTGRES_USER"),  
+            password=os.getenv("POSTGRES_PASSWORD"),  
+            port="5432"
+        )
 
     return conn
 
