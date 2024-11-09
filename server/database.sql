@@ -27,7 +27,8 @@ CREATE TABLE forumPosts (
 
 CREATE TABLE movies (  
     movie_id SERIAL PRIMARY KEY,
-    title character varying(255),
+    movie_title character varying(255),
+    tags text,
     link TEXT,
     genre TEXT[],
     rating TEXT,
@@ -35,6 +36,22 @@ CREATE TABLE movies (
     top_actors TEXT[]
 );
 
+INSERT INTO movies (movie_id, movie_title, tags)
+VALUES
+(1, 'The Dark Knight',
+'action, crime, dark, drama, philosophical, practical effects, superhero, thriller'),
+(2, '12 Angry Men', 
+'crime, drama, philosophical'),
+(3, 'The Lord of the Rings: The Return of the King', 
+'action, dark, drama, fantasy, practical effects, war'),
+(4, 'Interstellar', 
+'action, drama, sci-fi, thriller'),
+(5, 'Star Wars: Episode IV - A New Hope', 
+'action, philosophical, practical effects, sci-fi, war'),
+(6, 'The Magnificent Seven', 
+'action, comedy, drama, practical effects, western'),
+(7, 'Gremlins', 
+'action, comedy, horror, practical effects, thriller');
 
 \copy movies (title, link, genre, rating, director, top_actors) FROM 'insert\path' WITH CSV HEADER NULL AS '' QUOTE '"'
 ALTER TABLE movies ADD COLUMN movie_poster VARCHAR(255);
@@ -52,6 +69,26 @@ ALTER TABLE movies ADD COLUMN dislikes INTEGER DEFAULT 0;
 
 ALTER TABLE movies ADD COLUMN rating INTEGER DEFAULT 0;
 ALTER TABLE movies ADD COLUMN rating_count INTEGER DEFAULT 0;
+
+
+CREATE TABLE IF NOT EXISTS user_ratings (
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    movie_id INTEGER NOT NULL REFERENCES movies(movie_id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL,
+    PRIMARY KEY (user_id, movie_id)
+);
+
+ALTER TABLE movies
+    ALTER COLUMN likes SET DATA TYPE INTEGER USING likes::INTEGER,
+    ALTER COLUMN dislikes SET DATA TYPE INTEGER USING dislikes::INTEGER,
+    ALTER COLUMN rating SET DATA TYPE INTEGER USING rating::INTEGER,
+    ALTER COLUMN rating_count SET DATA TYPE INTEGER USING rating_count::INTEGER;
+
+-- Set default values for the new columns
+UPDATE movies
+SET likes = 0, dislikes = 0, rating = 0, rating_count = 0
+WHERE likes IS NULL OR dislikes IS NULL OR rating IS NULL OR rating_count IS NULL;
+
 
 --------------- Watchlist DB ( Marie ) -----------------------------
 

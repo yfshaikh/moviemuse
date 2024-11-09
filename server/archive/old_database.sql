@@ -21,7 +21,7 @@ CREATE TABLE movies (
 );
 
 INSERT INTO movies (movie_id, movie_title, tags)
-VALUES
+VALUES 
 (1, 'The Dark Knight',
 'action, crime, dark, drama, philosophical, practical effects, superhero, thriller'),
 (2, '12 Angry Men', 
