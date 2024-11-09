@@ -24,7 +24,7 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    if os.getenv('DATABASE_URL') is None:
+    if os.getenv("POSTGRES_DATABASE") is None:
         conn = psycopg2.connect(
             host="localhost",  
             database="moviemuse",  
