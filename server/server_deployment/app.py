@@ -24,13 +24,9 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    conn = psycopg2.connect(
-        host="localhost",
-        database="moviemuse",
-        user=os.getenv("USER"),
-        password=os.getenv("PASSWORD"),
-        port="5433" 
-    )
+    database_url = os.getenv('DEPLOYED_DATABASE_URL')
+    conn = psycopg2.connect(database_url)
+
     return conn
 
 
