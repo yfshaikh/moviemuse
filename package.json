@@ -1,0 +1,11 @@
+{
+  "name": "moviemuse",
+  "version": "1.0.0",
+  "description": "To start up the project for the first time:\r 1. run ```cd client``` to enter the client directory\r 2. run ```npm install``` to install the necessary dependencies\r 3. run ```npm run dev``` to start up the website locally",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}

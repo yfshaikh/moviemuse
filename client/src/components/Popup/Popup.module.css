@@ -1,0 +1,42 @@
+.popupOverlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5); 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+  }
+  
+  .popupContainer {
+    background-color: var(--grey);
+    padding: 1.5rem; 
+    border-radius: 0.75rem; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    position: relative;
+    width: 100%;
+    max-width: 32rem;
+    margin: 0 1rem;
+  }
+  
+  .closeButton {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    background-color: transparent; 
+    border: none; 
+    color: white; 
+    font-size: 1.25rem; 
+    padding: 0.5rem; 
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .closeButton:hover {
+    color: #e53e3e; 
+  }
+  
+  .closeButton:focus {
+    outline: none; 
+  }
+  

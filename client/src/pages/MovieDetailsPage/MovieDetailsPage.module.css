@@ -1,0 +1,133 @@
+.movie-details {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+}
+
+.movie-details img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 20px rgba(86, 88, 88, 0.7), 0 0 40px rgba(86, 88, 88, 0.7),
+   0 0 60px rgba(86, 88, 88, 0.7);
+
+}
+
+.watchlist-button {
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 16px;
+    background-color: var(--yellow);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #222;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+  }
+  
+  .watchlist-button:hover {
+    background-color: transparent;
+    color: white;
+    border: 1px solid var(--yellow);
+  }
+  
+  .movie-ratings {
+
+  }
+
+  .rating-buttons {
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 16px;
+    background-color: var(--yellow);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #222;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+    margin:20px;
+  }
+
+
+  .watchlist-button:hover {
+    background-color: transparent;
+    color: white;
+    border: 1px solid var(--yellow);
+  }
+  
+  /*-------------- Animation for messages ----------------*/
+
+  .message {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    text-align: center;
+    transition: opacity 0.5s ease-in-out;
+}
+
+.fadeInOut {
+    opacity: 1;
+    animation: fadeOut 3s forwards; /* Trigger fade-out over 3 seconds */
+}
+
+.rating-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.rating-input {
+  width: 70px;
+  height: 40px;
+  padding: 5px;
+  font-size: 16px;
+  text-align: center;
+  border: 1px solid var(--yellow);
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+  margin-left: 10px;
+}
+
+.submit-button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: var(--yellow);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #222;
+  font-weight: bold;
+  margin-left: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: transparent;
+  color: white;
+  border: 1px solid var(--yellow);
+}
+
+.average-rating {
+  margin-left: 20px;
+  font-size: 16px;
+  color: white;
+}
+
+/* Keyframes for fade-out effect */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}

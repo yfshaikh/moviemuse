@@ -1,0 +1,156 @@
+.homepage {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.logo-container {
+  margin-bottom: 0px;
+}
+
+.logo {
+  max-width: 200px; 
+}
+
+.homepage h1 {
+  font-size: 2.5rem;
+}
+
+.homepage p {
+  font-size: 1.2rem;
+  padding-top: 32px;
+}
+
+.btn-container {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  margin-top: 10px;
+  background-color: var(--yellow);
+  color: var(--grey);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.btn:hover {
+  background-color: var(--gray);
+  color: var(--yellow);
+  border: 1px solid var(--yellow);
+} 
+
+.btn-inverted {
+  padding: 10px 20px;
+  font-size: 1rem;
+  margin-top: 10px;
+  background-color: var(--grey);
+  color: var(--yellow);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  min-width: 150px;
+
+
+}
+
+.btn-inverted:hover {
+  background-color: var(--yellow);
+  color: var(--grey);
+  border: 1px solid var(--grey);
+} 
+
+
+.btn-purp {
+  padding: 10px 20px;
+  font-size: 1rem;
+  margin-top: 10px;
+  background-color: var(--yellow);
+  color: var(--grey);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  min-width: 150px;
+}
+
+.btn-purp:hover {
+  background-color: var(--purple);
+  color: var(--white);
+  border: 1px solid var(--yellow);
+} 
+
+.text-container-btn {
+  padding-top: 20px;
+  margin: auto;
+}
+
+
+.arrow {
+  margin-top: 60px;
+  width: 50px;
+  height: auto;
+  opacity: 0.6;
+  animation: bounce 2s infinite;
+}
+
+/* Animation for arrow bounce effect */
+@keyframes bounce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.full-width-container {
+  width: 100%;
+  padding: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--yellow);
+  color: black;
+  box-sizing: border-box;
+  flex-direction: row;
+}
+
+
+
+
+.text-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align text to the start */
+}
+
+.text-container-grey {
+  color:white;
+  display: flex;
+  flex-direction: column;
+}
+
+.video {
+  width: 50%; /* Adjust as needed */
+  height: auto;
+  max-height: 400px;
+  margin-left: 20px; /* Add margin to the left of the video */
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.footer {
+  color: white;
+  font-size: 0.9rem;
+  padding: 20px 0;
+  width: 100%;
+  text-align: center;
+}

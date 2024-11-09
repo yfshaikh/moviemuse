@@ -1,0 +1,227 @@
+.forum-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.button-container {
+  text-align: right;
+  margin-bottom: 20px;
+}
+
+.btn {
+  background-color: var(--yellow);
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color: var(--dark-yellow);
+}
+
+.post {
+  background-color: var(--light-grey);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  transition: transform 0.3s;
+}
+
+.post:hover {
+  transform: translateY(-5px);
+}
+
+.postHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.postTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+
+.postTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.tag {
+  background-color: #f0f0f0;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+}
+
+.postContent {
+  margin: 20px 0;
+}
+
+.postText {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.postFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 10px;
+  margin-top: 10px;
+}
+
+.postInfoContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--grey); 
+  padding: 10px 15px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.postInfo {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+
+.profile-pic {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e0e0e0;
+}
+
+.authorName {
+  font-weight: 600;
+  color: white;
+}
+
+.postLikes, .postComments {
+  font-size: 0.9rem;
+  color: lightgray;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 10px;
+}
+
+.likeButton, .commentButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.3s;
+  margin-left: 10px;
+}
+
+.likeButton:hover, .commentButton:hover {
+  transform: scale(1.2);
+}
+
+.likeButton {
+  margin-left: 15px;
+}
+
+.heartIcon, .commentIcon {
+  font-size: 20px;
+  color: #888;
+}
+
+.likeButton.liked .heartIcon {
+  color: #e83e3e;
+}
+
+
+.commentSection {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-top: 10px;
+}
+
+.commentInput {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s;
+  border: 1px solid white;
+  background-color: transparent;
+  color: white;
+}
+
+.commentInput:focus {
+  border: var(--input-focus);
+  box-shadow: 0 0 4px 1px var(--input-focus);
+  outline: none;
+}
+
+.commentSubmitButton {
+  background-color: var(--yellow);
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s;
+}
+
+.commentSubmitButton:hover {
+  background-color: var(--dark-yellow);
+}
+
+/* Comment container styles */
+.commentsList {
+  margin-top: 20px;
+}
+
+.commentContainer {
+  background-color: var(--grey); 
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.comment {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.commentAuthor {
+  font-weight: bold;
+  color: white;
+}
+
+.commentText {
+  font-size: 0.9rem;
+  color: white;
+}
+
+.userIcon {
+  font-size: 18px;
+  color: #777;
+  margin-right: 5px; 
+}
+
+.profile-pic {
+  width: 30px; 
+  height: 30px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 8px; 
+  border: 2px solid #e0e0e0; 
+}
+
