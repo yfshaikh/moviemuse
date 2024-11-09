@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './MoviePage.module.css'; 
 import Navbar from '../../components/Navbar/Navbar';
+import API_BASE_URL from '../../api';
 
 function MoviePage() {
   const [query, setQuery] = useState('');
@@ -16,7 +17,7 @@ function MoviePage() {
 
     try {
       // build URL with query parameters
-      const url = new URL('http://localhost:8000/search');
+      const url = new URL(`${API_BASE_URL}/search`);
       if (query) url.searchParams.append('title', query);
       selectedGenres.forEach((genre) => url.searchParams.append('genres', genre.toLowerCase()));
 

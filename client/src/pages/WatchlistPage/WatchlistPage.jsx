@@ -3,6 +3,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import styles from './WatchlistPage.module.css';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
+import API_BASE_URL from '../../api';
 
 const WatchlistPage = () => {
   const { user } = useUser();
@@ -14,7 +15,7 @@ const WatchlistPage = () => {
   useEffect(() => {
     const fetchWatchlist = async () => {
       try {
-        const response = await fetch(`http://localhost:8000/watchlist/${user.user_id}`, {
+        const response = await fetch(`${API_BASE_URL}/watchlist/${user.user_id}`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/json",

@@ -4,6 +4,7 @@ import Navbar from '../../components/Navbar/Navbar';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import { jwtDecode } from 'jwt-decode'
+import API_BASE_URL from '../../api';
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -19,7 +20,7 @@ function LoginPage() {
         setSuccess(false);
 
         try { 
-            const response = await fetch('http://localhost:8000/login', {
+            const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

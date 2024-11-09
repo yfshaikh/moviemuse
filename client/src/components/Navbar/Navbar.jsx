@@ -6,6 +6,7 @@ import Popup from '../Popup/Popup.jsx';
 import { db, storage } from '../../firebase.js';
 import { doc, setDoc, updateDoc, getDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import API_BASE_URL from '../../api.jsx';
 
 function Navbar() {
   const { user, logout, pfp, updatePfp } = useUser();
@@ -35,7 +36,7 @@ function Navbar() {
 
   const postProfile = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/update_profile_picture`, {
+      const response = await fetch(`${API_BASE_URL}/update_profile_picture`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

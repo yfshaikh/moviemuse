@@ -3,6 +3,7 @@ import styles from './ForumPostPage.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
+import API_BASE_URL from '../../api';
 
 
 function ForumPostPage() {
@@ -34,7 +35,7 @@ function ForumPostPage() {
     setSuccess(false);
 
     try {
-      const response = await fetch("http://localhost:8000/forum", {
+      const response = await fetch(`${API_BASE_URL}/forum`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",

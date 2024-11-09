@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styles from './SignUpPage.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { Link } from 'react-router-dom';
+import API_BASE_URL from '../../api';
 
 function SignUpPage() {
   const [email, setEmail] = useState('');
@@ -21,7 +22,7 @@ function SignUpPage() {
     };
 
     try {
-      const response = await fetch('http://localhost:8000/users', {
+      const response = await fetch(`${API_BASE_URL}/users`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

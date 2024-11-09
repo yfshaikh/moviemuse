@@ -42,7 +42,7 @@ export const UserProvider = ({ children }) => {
         if(user && user.user_id) {
             const userId = String(user.user_id);
             const storageRef = ref(storage, `profilePictures/${userId}`);
-        
+         
             try {
                 // Upload the file to Firebase Storage
                 await uploadBytes(storageRef, file);

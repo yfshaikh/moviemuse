@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import styles from './MovieDetailsPage.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { useUser } from '../../context/UserContext';
+import API_BASE_URL from '../../api';
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
@@ -21,7 +22,7 @@ const MovieDetailsPage = () => {
     useEffect(() => {
         const fetchMovieDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/movie/${id}`);
+                const response = await fetch(`${API_BASE_URL}/movie/${id}`);
                 if (!response.ok) throw new Error('Failed to fetch movie details');
                 const data = await response.json();
                 setMovie(data);
@@ -35,7 +36,7 @@ const MovieDetailsPage = () => {
     
         const checkIfInWatchlist = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/watchlist/${user.user_id}`, {
+                const response = await fetch(`${API_BASE_URL}/watchlist/${user.user_id}`, {
                     method: 'GET',
                     headers: {
                       "Content-Type": "application/json",
@@ -60,7 +61,7 @@ const MovieDetailsPage = () => {
     const handleToggleWatchlist = async () => {
         try {
             const endpoint = isInWatchlist ? 'remove_from_watchlist' : 'add_to_watchlist';
-            const response = await fetch(`http://localhost:8000/${endpoint}`, {
+            const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: user.user_id, movie_id: id }),
@@ -99,7 +100,7 @@ const MovieDetailsPage = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/movies/${id}/rate`, {
+            const response = await fetch(`${API_BASE_URL}/movies/${id}/rate`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',

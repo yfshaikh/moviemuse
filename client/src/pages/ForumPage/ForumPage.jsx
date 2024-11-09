@@ -6,6 +6,7 @@ import { faHeart as faHeartSolid } from '@fortawesome/free-solid-svg-icons';
 import styles from "./ForumPage.module.css";
 import Navbar from '../../components/Navbar/Navbar';
 import { useUser } from "../../context/UserContext";
+import API_BASE_URL from "../../api";
 
 function ForumPage() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ function ForumPage() {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await fetch("http://localhost:8000/forum");
+        const response = await fetch(`${API_BASE_URL}/forum`);
 
         if (response.ok) {
           const data = await response.json();
@@ -50,7 +51,7 @@ function ForumPage() {
     setLoadingComments((prev) => ({ ...prev, [postId]: true }));
 
     try {
-      const response = await fetch(`http://localhost:8000/comments/${postId}`, {
+      const response = await fetch(`${API_BASE_URL}/comments/${postId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Bearer ${token}`, 
@@ -99,7 +100,7 @@ function ForumPage() {
     };
   
     try {
-      const response = await fetch('http://localhost:8000/add_comment', {
+      const response = await fetch(`${API_BASE_URL}/add_comment`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -154,7 +155,7 @@ function ForumPage() {
     };
   
     try {
-      const response = await fetch('http://localhost:8000/like_post', {
+      const response = await fetch(`${API_BASE_URL}/like_post`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
