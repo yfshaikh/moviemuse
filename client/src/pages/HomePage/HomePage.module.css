@@ -21,7 +21,7 @@
 
 .homepage p {
   font-size: 1.2rem;
-  padding-top: 32px;
+  padding-bottom: 20px;
 }
 
 .btn-container {
@@ -111,6 +111,45 @@
   }
 }
 
+/* Fade in effect for entering home page */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Apply fade-in effect to the homepage */
+.logo-container {
+  animation: fadeIn 1s ease-in-out forwards;
+  animation-delay: 0.2s;
+  opacity: 0;
+}
+
+.homepage h1 {
+  animation: fadeIn 1s ease-in-out forwards;
+  animation-delay: 0.4s;
+  opacity: 0;
+}
+
+.subtitle {
+  animation: fadeIn 1s ease-in-out forwards;
+  animation-delay: 1.4s;
+  opacity: 0;
+}
+
+.btn {
+  animation: fadeIn 1s ease-in-out forwards;
+  animation-delay: 2.0s;
+  opacity: 0;
+}
+
+
+
 .full-width-container {
   width: 100%;
   padding: 60px;
@@ -121,6 +160,7 @@
   color: black;
   box-sizing: border-box;
   flex-direction: row;
+  text-align: center;
 }
 
 
@@ -129,7 +169,7 @@
 .text-container {
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align text to the start */
+  text-align: center
 }
 
 .text-container-grey {
@@ -138,11 +178,15 @@
   flex-direction: column;
 }
 
+.text-container-grey h1 {
+  margin-bottom: 0px;
+}
+
 .video {
   width: 50%; /* Adjust as needed */
   height: auto;
   max-height: 400px;
-  margin-left: 20px; /* Add margin to the left of the video */
+  margin: 20px; /* Add margin to the left of the video */
   border-radius: 6px;
   overflow: hidden;
 }
@@ -153,4 +197,71 @@
   padding: 20px 0;
   width: 100%;
   text-align: center;
+}
+
+/* ------------------------ FOR SMALL SCREENS ------------------------*/
+@media (max-width: 768px) {
+  .homepage {
+    padding: 20px;
+    height: auto;
+    text-align: center;
+  }
+
+  .logo {
+    max-width: 150px;
+  }
+
+  .btn {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
+
+  .btn-purp {
+    margin-top: 5px;
+    font-size: 0.9rem;
+  }
+
+  .btn-inverted {
+    margin-top: 5px;
+    margin-bottom: 10PX;
+
+  }
+
+  .full-width-container {
+    flex-direction: column;
+    padding: 50px 20px;
+  }
+
+  .video, .video img {
+    width: 100%;
+    max-height: 250px;
+    margin: 0 auto;
+  }
+
+  .text-container, .text-container-grey {
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .arrow {
+    width: 40px;
+    margin-top: 40px;
+  }
+
+  .footer {
+    font-size: 0.8rem;
+    padding: 15px;
+  }
+
+  /* Adjust font sizes */
+  .homepage h1 {
+    font-size: 2rem;
+  }
+  
+  .homepage p {
+    font-size: 1.2rem;
+    padding-top: 32px;
+  }
+  
 }

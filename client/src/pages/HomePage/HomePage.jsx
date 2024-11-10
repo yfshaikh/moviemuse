@@ -39,6 +39,13 @@ function HomePage() {
     fetchImages();
   }, []);
 
+  const scrollToContent = () => {
+    const nextSection = document.querySelector(`.${styles['full-width-container']}`);
+    if (nextSection) {
+      nextSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <Navbar/>
@@ -49,7 +56,7 @@ function HomePage() {
         <h1>MovieMuse</h1>
         <button className={styles['btn']} onClick={() => navigate('/signup')}>Get Started</button>
         <p className={styles['subtitle']}>Discover. Discuss. Dive Into Movies.</p>
-        {arrowUrl && <img src={arrowUrl} alt="arrow" className={styles['arrow']} />}
+        {arrowUrl && <img src={arrowUrl} alt="arrow" className={styles['arrow']} onClick={scrollToContent} />}
       </div>
 
       <div className={styles['full-width-container']}>
