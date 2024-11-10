@@ -305,3 +305,72 @@ class ForumTestCase(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
+# ----------------------------------------------- MOVIE SEARCH -----------------------------------------------
+# To sort movies based on rating/title alphabetically/maturity rating
+class Movie:
+    def __init__(self, title, rating, maturity_rating):
+        self.title = title
+        self.rating = rating
+        self.maturity_rating = maturity_rating
+
+    def __repr__(self):
+        return f"'{self.title}' (Rating: {self.rating}, Maturity Rating: {self.maturity_rating})"
+
+
+def sort_alphabetically_A_Z(movies):
+    return sorted(movies, key=lambda x: x.title)
+
+
+def sort_alphabetically_Z_A(movies):
+    return sorted(movies, key=lambda x: x.title, reverse=True)
+
+
+def sort_by_rating_high_to_low(movies):
+    return sorted(movies, key=lambda x: x.rating, reverse=True)
+
+
+def sort_by_rating_low_to_high(movies):
+    return sorted(movies, key=lambda x: x.rating)
+
+
+def sort_by_maturity_R_G(movies):
+    maturity_order = {'G': 1, 'PG': 2, 'PG-13': 3, 'R': 4}
+    return sorted(movies, key=lambda x: maturity_order.get(x.maturity_rating, 5), reverse=True)
+
+
+def sort_by_maturity_G_R(movies):
+    maturity_order = {'G': 1, 'PG': 2, 'PG-13': 3, 'R': 4}
+    return sorted(movies, key=lambda x: maturity_order.get(x.maturity_rating, 5))
+
+
+# Test Data
+movies = [
+    Movie("Inception", 8.8, "PG-13"),
+    Movie("Avatar", 8.0, "PG-13"),
+    Movie("Zootopia", 8.0, "PG"),
+    Movie("The Dark Knight", 9.0, "PG-13"),
+    Movie("Toy Story", 8.3, "G"),
+    Movie("Deadpool", 8.0, "R"),
+    Movie("Titanic", 7.8, "PG-13")
+]
+
+# Test Cases
+print("Sorted Alphabetically A-Z:")
+print(sort_alphabetically_A_Z(movies))
+
+print("\nSorted Alphabetically Z-A:")
+print(sort_alphabetically_Z_A(movies))
+
+print("\nSorted by Rating (Highest to Lowest):")
+print(sort_by_rating_high_to_low(movies))
+
+print("\nSorted by Rating (Lowest to Highest):")
+print(sort_by_rating_low_to_high(movies))
+
+print("\nSorted by Maturity Rating (R to G):")
+print(sort_by_maturity_R_G(movies))
+
+print("\nSorted by Maturity Rating (G to R):")
+print(sort_by_maturity_G_R(movies))
+
