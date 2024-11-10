@@ -90,3 +90,22 @@ token generated using a test account Jdoe123@gmail.com with password 123456. The
 
 	If user is logged in: Comment added successfully. Status Code: 201
 
+#
+----------------------------------------------------------------------
+# Searching Movies (Noorhan)
+
+## Inputs
+# 'test_search_movies_with_multiple_valid_genres
+- Any valid token
+- EX: "Toy Story"
+
+## test_search_movies_with_no_results
+- Any invalid token
+- EX: "Not a Movie"
+
+## Outputs
+# test_search_movies_with_multiple_valid_genres
+- Movie matches genres chosen: corresponding movies show up
+
+# test_search_movies_with_no_results
+- OK: Nothing shows up on the screen 
