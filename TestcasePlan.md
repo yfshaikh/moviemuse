@@ -43,3 +43,50 @@ The token may expire during testing so generate a new token every so often.
 ### `test_rating_with_valid_login`
 - *If user has already rated movie* - ERROR: "You have already rated this movie" 
 - *If user has not rated movie* - OK: "Rating submitted successfully"
+
+# -------------------------------------------------------------------------------------------------------------
+
+# Login & Forum Posts (Marie)
+## Inputs
+For the `test_create_forum_post` and `test_comment_on_forum_post` cases, it will also take a
+token generated using a test account Jdoe123@gmail.com with password 123456. The token is created in the test case
+	
+### `test_login_with_unregistered_email`
+- Email not registered in the database. EX: unregistereduser@example.com
+- Any valid password. EX: password123
+
+### `test_login_with_not_an_email`
+- Any invalid email format (no @ or .com). EX: invalid-email
+- Any valid password. EX: password123
+
+### `test_create_forum_post`
+- Valid token.
+- Post Data:
+- 	Title: Sample Forum Post
+- 	Content: This is a test post for verification.
+- 	Tags: test
+
+### `test_comment_on_forum_post`
+- Valid token
+- Any valid post_id. EX: 1
+- Comment. EX: This is a test comment on the forum post.
+
+## Expected Outputs
+### `test_login_with_unregistered_email`
+- OK: Error: {"error": "Invalid email or password"}
+
+### `test_login_with_not_an_email`
+- OK: Error: {"error": "Invalid email or password"}
+
+### `test_create_forum_post`
+- OK: 
+	If user not logged in: Error: {"error": "Authorization header missing"} with a 401 status code prompting the user to log in.
+
+	If user is logged in: Post successfully created. Status Code: 200
+
+### `test_comment_on_forum_post`
+- OK: 
+	If user not logged in: Error: {"error": "Authorization header missing"} with a 401 status code prompting the user to log in.
+
+	If user is logged in: Comment added successfully. Status Code: 201
+
