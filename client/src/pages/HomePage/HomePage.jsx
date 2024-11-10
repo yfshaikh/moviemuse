@@ -56,7 +56,7 @@ function HomePage() {
         <h1>MovieMuse</h1>
         <p className={styles['subtitle']}>Discover. Discuss. Dive Into Movies.</p>
         <button className={styles['btn']} onClick={() => navigate('/signup')}>Get Started</button>
-        <img src="\images\white-down-arrow.png" alt="arrow" className={styles['arrow']} onClick={scrollToContent}/>
+        <img src="/images/white-down-arrow.png" alt="arrow" className={styles['arrow']} onClick={scrollToContent}/>
       </div>
 
       <div className={styles['full-width-container']}>
