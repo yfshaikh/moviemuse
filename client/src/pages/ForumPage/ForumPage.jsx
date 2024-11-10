@@ -18,6 +18,7 @@ function ForumPage() {
   const [commentInputs, setCommentInputs] = useState({}); // State for comment inputs
   const [comments, setComments] = useState({}); // State for fetched comments
   const [loadingComments, setLoadingComments] = useState({}); // Track loading state for comments
+  const [userProfilePics, setUserProfilePics] = useState({});
 
   // Fetch posts and comments
   useEffect(() => {
@@ -33,6 +34,7 @@ function ForumPage() {
           // Fetch comments for each post
           data.forumPosts.forEach(post => {
             fetchComments(post.id);
+            fetchUserProfilePic(post.userID); // Fetch the user's pfp
           });
 
         } else {
@@ -72,6 +74,32 @@ function ForumPage() {
       console.error('Error making API request:', error);
     } finally {
       setLoadingComments((prev) => ({ ...prev, [postId]: false }));
+    }
+  };
+  
+  // Fetch user profile picture by user ID
+  const fetchUserProfilePic = async (userId) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/user/${userId}/profile_pic`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`, 
+        },
+      });
+
+      if (response.ok) {
+        const userData = await response.json();
+        setUserProfilePics((prev) => ({
+          ...prev,
+          [userId]: userData.image_url || "/images/profile-pic-placeholder.jpg", // Fallback to placeholder if no pfp
+        }));
+        console.log('fetched pfp:', userData.image_url)
+        console.log('userID: ', userId)
+      } else {
+        console.error('Error fetching user profile:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error fetching user profile:', error);
     }
   };
 
@@ -205,7 +233,7 @@ function ForumPage() {
                 <div className={styles.postInfoContainer}>
                   <div className={styles.postInfo}>
                     <img
-                      src={pfp || "/images/profile-pic-placeholder.jpg"}
+                      src={userProfilePics[post.userID] || "/images/profile-pic-placeholder.jpg"}
                       alt="Profile"
                       className={styles['profile-pic']}
                     />

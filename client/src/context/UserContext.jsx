@@ -3,6 +3,7 @@ import { jwtDecode } from 'jwt-decode'
 import { db, storage } from '../firebase.js';
 import { doc, setDoc, updateDoc, getDoc, collection } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import API_BASE_URL from '../api.jsx';
 
 // create context
 const UserContext = createContext();
@@ -71,6 +72,32 @@ export const UserProvider = ({ children }) => {
                 }
     };
 
+
+    // update SQL db
+    const postProfile = async () => {
+        const token = localStorage.getItem('token');
+        try {
+          const response = await fetch(`${API_BASE_URL}/update_profile_picture`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`, 
+            },
+            body: JSON.stringify({image_url: pfp}),
+          });
+    
+          if (response.ok) {
+            const data = await response.json();
+            console.log('pfp updated successfully');
+    
+          } else {
+            console.log('Error updating pfp');
+          }
+        } catch (error) {
+          console.error('An error occurred:', error);
+        }
+      };
+
     useEffect(() => {
         // Fetch profile picture from Firestore on mount 
         const fetchPfp = async () => {
@@ -89,7 +116,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, setUser, pfp, setPfp, updatePfp, logout, login }}>
+        <UserContext.Provider value={{ user, setUser, pfp, setPfp, updatePfp, logout, login, postProfile }}>
             {children}
         </UserContext.Provider>
     );

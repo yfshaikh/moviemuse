@@ -24,7 +24,8 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    if os.getenv("POSTGRES_DATABASE") is None:
+    localtesting = False
+    if localtesting:
         conn = psycopg2.connect(
             host="localhost",  
             database="moviemuse",  
@@ -688,6 +689,25 @@ def update_profile_picture():
     conn.close()
 
     return jsonify({"message": "Profile picture updated successfully"}), 200
+
+@app.route('/user/<int:user_id>/profile_pic', methods=['GET'])
+def get_user_profile_pic(user_id):
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT image_url FROM users WHERE id = %s", (user_id,))
+        user = cursor.fetchone()
+        if user:
+            image_url = user[0] 
+            if image_url:
+                return jsonify({"image_url": image_url}), 200
+            else:
+                return jsonify({"error": "Profile picture not found"}), 404
+        else:
+            return jsonify({"error": "User not found"}), 404
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 
 if __name__ == '__main__':
