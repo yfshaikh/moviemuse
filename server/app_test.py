@@ -374,3 +374,38 @@ print(sort_by_maturity_R_G(movies))
 print("\nSorted by Maturity Rating (G to R):")
 print(sort_by_maturity_G_R(movies))
 
+
+# Delete movies from watch list
+class MovieWatchlistTestCase(unittest.TestCase):
+    
+    def setUp(self):
+        self.app = app.test_client()
+        self.app.testing = True
+        self.token = 'your-valid-token-here'  # Replace with a valid user token
+
+    def test_delete_movie_from_watchlist(self):
+        # Test case for deleting a movie from the user's watchlist
+        # Expects a 200 response and confirmation that the movie was removed
+        
+        movie_id = 1  # Replace with a valid movie ID for testing
+
+        # First, add the movie to the watchlist
+        response = self.app.post(f'/watchlist/add', json={'movie_id': movie_id}, headers={'Authorization': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'Movie added to watchlist')
+
+        # Now, delete the movie from the watchlist
+        response = self.app.post(f'/watchlist/delete', json={'movie_id': movie_id}, headers={'Authorization': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'Movie removed from watchlist')
+
+        # Check if the movie is actually removed from the watchlist
+        response = self.app.get(f'/watchlist', headers={'Authorization': f'Bearer {self.token}'})
+        self.assertEqual(response.status_code, 200)
+        data = response.get_json()
+        self.assertIn('watchlist', data)
+        self.assertNotIn(movie_id, data['watchlist'])  # Ensure that the movie ID is no longer in the watchlist
