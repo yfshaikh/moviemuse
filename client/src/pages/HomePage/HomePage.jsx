@@ -54,9 +54,9 @@ function HomePage() {
           <img src="/images/moviemuseinverted.png" alt="Logo" className={styles['logo']} />
         </div>
         <h1>MovieMuse</h1>
-        <button className={styles['btn']} onClick={() => navigate('/signup')}>Get Started</button>
         <p className={styles['subtitle']}>Discover. Discuss. Dive Into Movies.</p>
-        {arrowUrl && <img src={arrowUrl} alt="arrow" className={styles['arrow']} onClick={scrollToContent} />}
+        <button className={styles['btn']} onClick={() => navigate('/signup')}>Get Started</button>
+        <img src="\images\white-down-arrow.png" alt="arrow" className={styles['arrow']} onClick={scrollToContent}/>
       </div>
 
       <div className={styles['full-width-container']}>
