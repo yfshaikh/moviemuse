@@ -1,5 +1,11 @@
+import sys
+import os
+from uuid import uuid4
+sys.path.insert(0, os.path.abspath(os.path.dirname(__file__)))
+
 import unittest
-from moviemuse.server.server_deployment.app import app
+from server_deployment.app import app
+
 
 class MovieSearchTestCase(unittest.TestCase):
     def setUp(self):
@@ -25,79 +31,6 @@ class MovieSearchTestCase(unittest.TestCase):
         data = response.get_json()
         self.assertIn('error', data)
         self.assertTrue(data['error'].startswith('Invalid genre(s):'))
-
-
-class LoginTestCase(unittest.TestCase):
-    def setUp(self):
-        self.app = app.test_client()
-        self.app.testing = True
-
-    # --------------------- LOGIN TEST CASES (YUSUF) ---------------------
-
-    # test case for login with valid credentials
-    def test_login_with_valid_credentials(self):
-        # Test case for successful login with valid credentials
-        # Expects a 200 status and success message
-        response = self.app.post('/login', json={
-            'email': 'validuser@example.com',
-            'password': 'correctpassword'
-        })
-        self.assertEqual(response.status_code, 200) # checks that the response status code from the API is 200
-        data = response.get_json() # extracts the JSON content from the API response
-        self.assertIn('message', data) # checks that there is an 'message' key in the data dictionary.
-        self.assertEqual(data['message'], 'Login successful') # checks that the value of the 'message' key in the response matches the expected message
-
-    # Test case for login with incorrect password
-    def test_login_with_invalid_password(self):
-        # Test case for login with a valid email but incorrect password
-        # Expects a 401 error with an invalid login error message
-        response = self.app.post('/login', json={
-            'email': 'validuser@example.com',
-            'password': 'wrongpassword'
-        })
-        self.assertEqual(response.status_code, 401)
-        data = response.get_json()
-        self.assertIn('error', data)
-        self.assertEqual(data['error'], 'Invalid email or password')
-
-    # Test case for login with missing email or password
-    def test_login_missing_fields(self):
-        # Test case for login with missing email or password fields
-        # Expects a 400 error with a message indicating missing fields
-        response = self.app.post('/login', json={
-            'email': '',  # Missing email
-            'password': 'password'
-        })
-        self.assertEqual(response.status_code, 400)
-        data = response.get_json()
-        self.assertIn('error', data)
-        self.assertEqual(data['error'], 'Email and password are required')
-
-    # ----------------- ADDITIONAL LOGIN TEST CASES (MARIE) ---------------------
-
-    def test_login_with_unregistered_email(self):
-        # Test case for login with an email that is not registered in the system
-        # Expects a 404 error indicating the user was not found
-        response = self.app.post('/login', json={
-            'email': 'unregistereduser@example.com',
-            'password': 'password'
-        })
-        self.assertEqual(response.status_code, 404)  # Assuming 404 for user not found
-        data = response.get_json()
-        self.assertIn('error', data)
-        self.assertEqual(data['error'], 'User not found') # Output of test case
-    
-    def test_login_with_not_an_email(self):
-        # Test case for login with an invalid email format
-        # Expects a 400 error with an error message about invalid email format
-        response = self.app.post('/login', json={
-            'email': 'invalid-email-format',
-            'password': 'password123'
-        })
-        self.assertEqual(response.status_code, 400)
-        data = response.get_json()
-        self.assertIn('error', data)
-        self.assertEqual(data['error'], 'Invalid email format') # Output of test case
 
 
 # ------------------------- ADDITIONAL MOVIE TEST CASES (NOORHAN) ---------------------------
@@ -179,7 +112,9 @@ def test_sort_movies_by_maturity_rating(self):
         self.assertIn(movie_id, data['watchlist'])  # Check if the movie ID is in the user's watchlist
 
 
-# -------------------------------- MOVIE RATINGS --------------------------------
+# --------------------------------------- MOVIE RATINGS -------------------------------------------
+
+    # Run with the following command: py -m unittest app_test.MovieRatingTestCase   (After generating new token)
 
 class MovieRatingTestCase(unittest.TestCase):
     
@@ -223,6 +158,150 @@ class MovieRatingTestCase(unittest.TestCase):
         data = response.get_json()
         self.assertIn('message', data)
         self.assertEqual(data['message'], 'Rating submitted successfully')
+
+
+
+# -------------------------------------- LOGGING IN ------------------------------------------
+
+    # Run with the following command: py -m unittest app_test.LoginTestCase
+
+class LoginTestCase(unittest.TestCase):
+    
+    # ------------------------------ Marie -----------------------------------    
+    
+    def setUp(self):
+        self.app = app.test_client()
+        self.app.testing = True
+
+    # Test case: Attempt to login with an unregistered email
+    def test_login_with_unregistered_email(self):
+        # This test simulates a login attempt using an email that is not registered in the system.
+        # Expected outcome: a 401 Unauthorized status with "Invalid email or password" message.
+        
+        response = self.app.post('/login', json={
+            'email': 'unregistereduser@example.com',
+            'password': 'password'
+        })
+        
+        # Check that the response status code is 401 (Unauthorized)
+        self.assertEqual(response.status_code, 401)
+        
+        # Verify the response contains the generic 'Invalid email or password' error
+        data = response.get_json()
+        self.assertIn('error', data)
+        self.assertEqual(data['error'], 'Invalid email or password')
+
+
+
+   # Test case: Attempt to login with an invalid email format
+    def test_login_with_not_an_email(self):
+        # This test checks the server's response when an improperly formatted email is provided.
+        # Expected outcome: a 401 Unauthorized status with "Invalid email or password" message.
+        
+        response = self.app.post('/login', json={
+            'email': 'invalid-email-format',
+            'password': 'password123'
+        })
+        
+        # Check that the response status code is 401 (Unauthorized)
+        self.assertEqual(response.status_code, 401)
+        
+        # Verify the response contains the generic 'Invalid email or password' error
+        data = response.get_json()
+        self.assertIn('error', data)
+        self.assertEqual(data['error'], 'Invalid email or password')
+
+    # ------------------------------ Yusuf -----------------------------------
+
+    # test case for login with valid credentials
+    def test_login_with_valid_credentials(self):
+        # Test case for successful login with valid credentials
+        # Expects a 200 status and success message
+        response = self.app.post('/login', json={
+            'email': 'Jdoe123@gmail.com',                   # Dummy Account in DB (You will need to create this account if you dont have it)
+            'password': '123456'
+        })
+        self.assertEqual(response.status_code, 200) # checks that the response status code from the API is 200
+        data = response.get_json() # extracts the JSON content from the API response
+        self.assertIn('message', data) # checks that there is an 'message' key in the data dictionary.
+        self.assertEqual(data['message'], 'Login successful') # checks that the value of the 'message' key in the response matches the expected message
+
+    # Test case for login with incorrect password
+    def test_login_with_invalid_password(self):
+        # Test case for login with a valid email but incorrect password
+        # Expects a 401 error with an invalid login error message
+        response = self.app.post('/login', json={
+            'email': 'validuser@example.com',
+            'password': 'wrongpassword'
+        })
+        self.assertEqual(response.status_code, 401)
+        data = response.get_json()
+        self.assertIn('error', data)
+        self.assertEqual(data['error'], 'Invalid email or password')
+
+    # Test case for login with missing email or password
+    def test_login_missing_fields(self):
+        # Test case for login with missing email or password fields
+        # Expects a 400 error with a message indicating missing fields
+        response = self.app.post('/login', json={
+            'email': '',  # Missing email
+            'password': 'password'
+        })
+        self.assertEqual(response.status_code, 400)
+        data = response.get_json()
+        self.assertIn('error', data)
+        self.assertEqual(data['error'], 'Email and password are required')
+
+
+# ----------------------------------------- FORUMS ---------------------------------------------
+
+    # Run with the following command: py -m unittest app_test.ForumTestCase
+
+class ForumTestCase(unittest.TestCase):
+    
+    # ------------------------------ Marie -----------------------------------    
+    
+    def setUp(self):
+        self.app = app.test_client()
+        self.app.testing = True
+        self.token = self.generate_token()
+
+    # Sets up token for a dummy account I created on the DB
+    def generate_token(self):
+        response = self.app.post('/login', json={'email': 'Jdoe123@gmail.com', 'password': '123456'})
+        data = response.get_json()
+        return data['token'] if 'token' in data else ''
+
+    # Test case: Verify that a forum post can be made by a logged-in user
+    def test_create_forum_post(self):
+        unique_title = f"Sample Forum Post {uuid4()}"  # Generate a unique title
+        response = self.app.post('/forum', json={
+            'title': unique_title,
+            'post': 'This is a test post for verification.',
+            'tags': 'test'
+        }, headers={'Authorization': f'Bearer {self.token}'})
+        
+        # Verify that the response status code is 200
+        self.assertEqual(response.status_code, 200)
+        
+        # Verify that the response contains a success message or redirect
+        data = response.get_json()
+        self.assertIn('redirect', data)
+
+    # Test case: Verify that a logged-in user can comment on a forum post
+    def test_comment_on_forum_post(self):
+        response = self.app.post('/add_comment', json={
+            'postID': 1,  # Replace 1 with an actual post ID for testing
+            'commentText': 'This is a test comment on the forum post.'
+        }, headers={'Authorization': f'Bearer {self.token}'})
+        
+        # Verify that the response status code is 201 Created
+        self.assertEqual(response.status_code, 201)
+        
+        # Verify that the response contains a success message
+        data = response.get_json()
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'Comment added successfully')
 
 if __name__ == '__main__':
     unittest.main()
