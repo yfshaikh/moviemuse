@@ -9,7 +9,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import API_BASE_URL from '../../api.jsx';
 
 function Navbar() {
-  const { user, logout, pfp, updatePfp } = useUser();
+  const { user, logout, pfp, updatePfp, postProfile } = useUser();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
@@ -25,37 +25,17 @@ function Navbar() {
     document.getElementById('fileInput').click();
   };
 
-  const handleFileChange = (e) => {
+  const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      updatePfp(file); 
+      await updatePfp(file); 
+      await postProfile();
       console.log(pfp)
     }
   };
 
 
-  const postProfile = async () => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/update_profile_picture`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, 
-        },
-        body: JSON.stringify({image_url: pfp}),
-      });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log('pfp updated successfully');
-
-      } else {
-        console.log('Error updating pfp');
-      }
-    } catch (error) {
-      console.error('An error occurred:', error);
-    }
-  };
 
 
   return (
