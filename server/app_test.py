@@ -313,36 +313,22 @@ class Movie:
         self.title = title
         self.rating = rating
         self.maturity_rating = maturity_rating
-
     def __repr__(self):
         return f"'{self.title}' (Rating: {self.rating}, Maturity Rating: {self.maturity_rating})"
-
-
 def sort_alphabetically_A_Z(movies):
     return sorted(movies, key=lambda x: x.title)
-
-
 def sort_alphabetically_Z_A(movies):
     return sorted(movies, key=lambda x: x.title, reverse=True)
-
-
 def sort_by_rating_high_to_low(movies):
     return sorted(movies, key=lambda x: x.rating, reverse=True)
-
-
 def sort_by_rating_low_to_high(movies):
     return sorted(movies, key=lambda x: x.rating)
-
-
 def sort_by_maturity_R_G(movies):
     maturity_order = {'G': 1, 'PG': 2, 'PG-13': 3, 'R': 4}
     return sorted(movies, key=lambda x: maturity_order.get(x.maturity_rating, 5), reverse=True)
-
-
 def sort_by_maturity_G_R(movies):
     maturity_order = {'G': 1, 'PG': 2, 'PG-13': 3, 'R': 4}
     return sorted(movies, key=lambda x: maturity_order.get(x.maturity_rating, 5))
-
 
 # Test Data
 movies = [
@@ -358,45 +344,38 @@ movies = [
 # Test Cases
 print("Sorted Alphabetically A-Z:")
 print(sort_alphabetically_A_Z(movies))
-
 print("\nSorted Alphabetically Z-A:")
 print(sort_alphabetically_Z_A(movies))
-
 print("\nSorted by Rating (Highest to Lowest):")
 print(sort_by_rating_high_to_low(movies))
-
 print("\nSorted by Rating (Lowest to Highest):")
 print(sort_by_rating_low_to_high(movies))
-
 print("\nSorted by Maturity Rating (R to G):")
 print(sort_by_maturity_R_G(movies))
-
 print("\nSorted by Maturity Rating (G to R):")
 print(sort_by_maturity_G_R(movies))
 
 
 # Delete movies from watch list
 class MovieWatchlistTestCase(unittest.TestCase):
-    
     def setUp(self):
         self.app = app.test_client()
         self.app.testing = True
         self.token = 'your-valid-token-here'  # Replace with a valid user token
-
     def test_delete_movie_from_watchlist(self):
         # Test case for deleting a movie from the user's watchlist
         # Expects a 200 response and confirmation that the movie was removed
-        
+
         movie_id = 1  # Replace with a valid movie ID for testing
 
-        # First, add the movie to the watchlist
+        # Add the movie to the watchlist
         response = self.app.post(f'/watchlist/add', json={'movie_id': movie_id}, headers={'Authorization': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
         self.assertIn('message', data)
         self.assertEqual(data['message'], 'Movie added to watchlist')
 
-        # Now, delete the movie from the watchlist
+        # Delete the movie from the watchlist
         response = self.app.post(f'/watchlist/delete', json={'movie_id': movie_id}, headers={'Authorization': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, 200)
         data = response.get_json()
