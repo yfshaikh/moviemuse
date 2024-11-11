@@ -72,18 +72,13 @@ def decode_token(token):
 def search_movies():
     try:
         # --- Genre Search ---
-        
-        # Get title and genres from URL
+
+        # get genres and title from URL 
         movie_title = request.args.get('title', '').strip()
         user_genres = request.args.getlist('genres')
 
-        # Debugging: Log the input title and genres
-        print(f"Search title: '{movie_title}'")
-        print(f"User genres: {user_genres}")
-
-        # Validate that at least a movie title is provided
+        # validate that at least a movie title is provided
         if not movie_title:
-            print("Error: No movie title provided")
             return jsonify({'error': 'No movie title provided'}), 400
 
         # Connect to the movie database
@@ -92,80 +87,57 @@ def search_movies():
 
         # --------------------- GENRE VALIDATION ---------------------
 
-        # Fetch all genres from movie table
+        # fetch all genres from movie table
         cursor.execute("""
-            SELECT DISTINCT genre
+            SELECT DISTINCT LOWER(unnest(string_to_array(tags, ','))) AS tag
             FROM movies
-            WHERE genre IS NOT NULL
         """)
-        existing_genres = set()
-        for genre in cursor.fetchall():
-            # Ensure each genre in the comma-separated list is stripped and stored as lowercase
-            genre_list = [g.strip().lower() for g in genre[0].split(',') if g.strip()]
-            existing_genres.update(genre_list)
-
-        # Debugging: Log existing genres in the database
-        print(f"Existing genres in the database: {existing_genres}")
+        existing_tags = set(tag[0].strip().lower() for tag in cursor.fetchall())
 
         # Check for any genres that don’t exist in the database
-        invalid_genres = [genre.lower() for genre in user_genres if genre.lower() not in existing_genres]
+        invalid_genres = [genre.lower() for genre in user_genres if genre.lower() not in existing_tags]
         if invalid_genres:
-            print(f"Invalid genres: {invalid_genres}")
             return jsonify({'error': f'Invalid genre(s): {", ".join(invalid_genres)}'}), 400
 
         # --- Title Search ---
         cursor.execute("""
-            SELECT movie_id, movie_title, genre, movie_poster 
+            SELECT movie_id, movie_title, tags, movie_poster 
             FROM movies 
             WHERE LOWER(movie_title) LIKE LOWER(%s)
         """, (f'%{movie_title}%',))
 
-        # Fetch matching movie entries
+        # fetch matching movie entries
         movies = cursor.fetchall()
 
-        # Debugging: Log the number of movies fetched
-        print(f"Number of movies found based on title: {len(movies)}")
-
-        # If no movies found based on the title, return an empty list
+        # if no movies found based on the title, return an empty list
         if not movies:
-            print("No movies found with the provided title")
             return jsonify({"movies": []})
-
-        # Close the connection after fetching results
+        
+        # close the connection after fetching results
         conn.commit()
         cursor.close()
         conn.close()
 
-        # Filter results by genres if any genres were provided
+        # filter results by genres if any genres were provided
         filtered_movies = []
         for movie in movies:
-            movie_id, title, genre, poster = movie
-            if genre:  # Ensure genre is not None or empty
-                movie_genres = set(g.strip().lower() for g in genre.split(',') if g.strip())
-
-                # Debugging: Log movie genre comparison
-                print(f"Movie: '{title}' with genres: {movie_genres}")
-
-                # If no genres were provided, include all movies
-                if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
-                    filtered_movies.append({
-                        "movie_id": movie_id,
-                        "title": title,
-                        "genre": genre,
-                        "poster": poster
-                    })
-            else:
-                print(f"Skipping movie '{title}' because it has no genre")
-
-        # Debugging: Log the final filtered list of movies
-        print(f"Filtered movies: {filtered_movies}")
+            movie_id, title, tags, poster = movie
+            movie_genres = set(tag.strip().lower() for tag in tags.split(','))
+            
+            # if no genres were provided, include all movies
+            if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
+                filtered_movies.append({
+                    "movie_id": movie_id,
+                    "title": title,
+                    "tags": tags,
+                    "poster": poster
+                })
 
         return jsonify({"movies": filtered_movies})
 
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
-
 
 
    
@@ -385,41 +357,24 @@ def get_movie_details(movie_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
-        # Query for movie details, including genre, movie description, top actors, and director
-        cursor.execute("""
-            SELECT movie_title, genre, movie_desc, top_actors, director, movie_poster, rating, rating_count
-            FROM movies
-            WHERE movie_id = %s
-        """, (movie_id,))
-        
+        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count FROM movies WHERE movie_id = %s", (movie_id,))
         movie = cursor.fetchone()
-        
         if movie:
-            movie_title, genre, movie_desc, top_actors, director, movie_poster, rating, rating_count = movie
-            
-            # Calculate average rating
+            movie_title, tags, movie_poster, rating, rating_count = movie
             average_rating = rating / rating_count if rating_count > 0 else 0
-            
-            # Create movie details dictionary
             movie_details = {
                 "movie_title": movie_title,
-                "genre": genre,
-                "movie_desc": movie_desc,
-                "top_actors": top_actors,
-                "director": director,
+                "tags": tags,
                 "movie_poster": movie_poster,
                 "average_rating": average_rating
             }
-            
             return jsonify(movie_details), 200
         else:
             return jsonify({"error": "Movie not found"}), 404
-
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"error": "Internal Server Error"}), 500  
-    
+        return jsonify({"error": "Internal Server Error"}), 500
+     
 @app.route('/forum', methods=['POST'])
 def add_forum_post():
 
