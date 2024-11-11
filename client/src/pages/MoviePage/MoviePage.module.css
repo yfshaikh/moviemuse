@@ -138,50 +138,68 @@
   }
   
   /* CSS for movie posters */
- .results {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-  list-style-type: none;
-  padding: 0;
-  margin-top: 20px;
-}
-
-.movie-item {
-  width: calc(33% - 20px); /* Fixed width for each item */
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 12px;
-  padding-bottom: 20px;
-  border-radius: 6px;
-  background-color: rgba(255, 255, 255, 0.027);
-}
-
-.movie-poster {
-  width: 100%;
-  height: auto;
-  border-radius: 4px;
-}
-
-.movie-title {
-  font-size: 16px;
-  padding: 8px 0;
-  /* text-align: center; */
-  width: 100%;
-}
-
-.movie-item:hover {
-  background-color: #333;
-}
-
-.movie-link {
-  text-decoration: none;
-  color: var(--light-text);
-
-}
-
-.movie-link:hover {
-  color: var(--yellow);
-}
+  .results {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+  
+  .movie-item {
+    flex: 1 1 calc(25% - 20px); /* 4 movies per row, but you can adjust the percentage */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 12px;
+    padding-bottom: 20px;
+    border-radius: 6px;
+    background-color: rgba(255, 255, 255, 0.027);
+  }
+  
+  .movie-poster {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  .movie-title {
+    font-size: 16px;
+    padding: 8px 0;
+    width: 100%;
+  }
+  
+  .movie-item:hover {
+    background-color: #333;
+  }
+  
+  .movie-link {
+    text-decoration: none;
+    color: var(--light-text);
+  }
+  
+  .movie-link:hover {
+    color: var(--yellow);
+  }
+  
+  /* Media query for smaller screens */
+  @media (max-width: 1200px) {
+    .movie-item {
+      flex: 1 1 calc(33% - 20px); /* 3 movies per row on medium screens */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .movie-item {
+      flex: 1 1 calc(50% - 20px); /* 2 movies per row on smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .movie-item {
+      flex: 1 1 calc(100% - 20px); /* 1 movie per row on very small screens */
+    }
+  }
+  
