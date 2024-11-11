@@ -73,11 +73,11 @@ def search_movies():
     try:
         # --- Genre Search ---
 
-        # get genres and title from URL 
+        # Get genres and title from URL 
         movie_title = request.args.get('title', '').strip()
-        user_genres = request.args.getlist('genres')
+        user_genres = [genre.lower() for genre in request.args.getlist('genres')]
 
-        # validate that at least a movie title is provided
+        # Validate that at least a movie title is provided
         if not movie_title:
             return jsonify({'error': 'No movie title provided'}), 400
 
@@ -87,49 +87,57 @@ def search_movies():
 
         # --------------------- GENRE VALIDATION ---------------------
 
-        # fetch all genres from movie table
+        # Fetch all genres from the movie table
         cursor.execute("""
-            SELECT DISTINCT LOWER(unnest(string_to_array(tags, ','))) AS tag
+            SELECT DISTINCT genre
             FROM movies
+            WHERE genre IS NOT NULL
         """)
-        existing_tags = set(tag[0].strip().lower() for tag in cursor.fetchall())
+        
+        # Set to store unique genres in lowercase
+        unique_genres = set()
+
+        # Process each genre tuple from fetchall_result
+        for genre_tuple in cursor.fetchall():
+            genres = genre_tuple[0].strip('{}').split(',')
+            unique_genres.update(genre.strip().lower() for genre in genres)
 
         # Check for any genres that don’t exist in the database
-        invalid_genres = [genre.lower() for genre in user_genres if genre.lower() not in existing_tags]
+        invalid_genres = [genre for genre in user_genres if genre not in unique_genres]
         if invalid_genres:
             return jsonify({'error': f'Invalid genre(s): {", ".join(invalid_genres)}'}), 400
 
         # --- Title Search ---
         cursor.execute("""
-            SELECT movie_id, movie_title, tags, movie_poster 
+            SELECT movie_id, movie_title, genre, movie_poster 
             FROM movies 
             WHERE LOWER(movie_title) LIKE LOWER(%s)
         """, (f'%{movie_title}%',))
 
-        # fetch matching movie entries
+        # Fetch matching movie entries
         movies = cursor.fetchall()
 
-        # if no movies found based on the title, return an empty list
+        # If no movies found based on the title, return an empty list
         if not movies:
             return jsonify({"movies": []})
-        
-        # close the connection after fetching results
+
+        # Close the connection after fetching results
         conn.commit()
         cursor.close()
         conn.close()
 
-        # filter results by genres if any genres were provided
+        # Filter results by genres if any genres were provided
         filtered_movies = []
         for movie in movies:
-            movie_id, title, tags, poster = movie
-            movie_genres = set(tag.strip().lower() for tag in tags.split(','))
-            
-            # if no genres were provided, include all movies
-            if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
+            movie_id, title, genre, poster = movie
+            movie_genres = set(genre.strip().lower() for genre in genre.split(','))
+
+            # Include movie if it matches any of the user-provided genres
+            if not user_genres or any(genre in movie_genres for genre in user_genres):
                 filtered_movies.append({
                     "movie_id": movie_id,
                     "title": title,
-                    "tags": tags,
+                    "genre": genre,
                     "poster": poster
                 })
 
@@ -138,7 +146,6 @@ def search_movies():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
-
 
    
 # create a new user
@@ -357,24 +364,42 @@ def get_movie_details(movie_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count FROM movies WHERE movie_id = %s", (movie_id,))
+        
+        # Query for movie details, including genre, movie description, top actors, and director
+        cursor.execute("""
+            SELECT movie_title, genre, movie_desc, top_actors, director, movie_poster, rating, rating_count
+            FROM movies
+            WHERE movie_id = %s
+        """, (movie_id,))
+        
         movie = cursor.fetchone()
+        
         if movie:
-            movie_title, tags, movie_poster, rating, rating_count = movie
+            movie_title, genre, movie_desc, top_actors, director, movie_poster, rating, rating_count = movie
+            
+            # Calculate average rating
             average_rating = rating / rating_count if rating_count > 0 else 0
+            
+            # Create movie details dictionary
             movie_details = {
                 "movie_title": movie_title,
-                "tags": tags,
+                "genre": genre,
+                "movie_desc": movie_desc,
+                "top_actors": top_actors,
+                "director": director,
                 "movie_poster": movie_poster,
                 "average_rating": average_rating
             }
+            
             return jsonify(movie_details), 200
         else:
             return jsonify({"error": "Movie not found"}), 404
+
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
-     
+
+
 @app.route('/forum', methods=['POST'])
 def add_forum_post():
 
