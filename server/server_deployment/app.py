@@ -77,8 +77,13 @@ def search_movies():
         movie_title = request.args.get('title', '').strip()
         user_genres = request.args.getlist('genres')
 
+        # Debugging: Log the input title and genres
+        print(f"Search title: '{movie_title}'")
+        print(f"User genres: {user_genres}")
+
         # validate that at least a movie title is provided
         if not movie_title:
+            print("Error: No movie title provided")
             return jsonify({'error': 'No movie title provided'}), 400
 
         # Connect to the movie database
@@ -95,9 +100,13 @@ def search_movies():
         """)
         existing_genres = set(genre[0].strip().lower() for genre in cursor.fetchall())
 
+        # Debugging: Log existing genres in the database
+        print(f"Existing genres in the database: {existing_genres}")
+
         # Check for any genres that don’t exist in the database
         invalid_genres = [genre.lower() for genre in user_genres if genre.lower() not in existing_genres]
         if invalid_genres:
+            print(f"Invalid genres: {invalid_genres}")
             return jsonify({'error': f'Invalid genre(s): {", ".join(invalid_genres)}'}), 400
 
         # --- Title Search ---
@@ -110,8 +119,12 @@ def search_movies():
         # fetch matching movie entries
         movies = cursor.fetchall()
 
+        # Debugging: Log the number of movies fetched
+        print(f"Number of movies found based on title: {len(movies)}")
+
         # if no movies found based on the title, return an empty list
         if not movies:
+            print("No movies found with the provided title")
             return jsonify({"movies": []})
 
         # close the connection after fetching results
@@ -125,6 +138,9 @@ def search_movies():
             movie_id, title, genre, poster = movie
             movie_genres = set(genre.strip().lower().split(','))
 
+            # Debugging: Log movie genre comparison
+            print(f"Movie: '{title}' with genres: {movie_genres}")
+
             # if no genres were provided, include all movies
             if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
                 filtered_movies.append({
@@ -134,11 +150,15 @@ def search_movies():
                     "poster": poster
                 })
 
+        # Debugging: Log the final filtered list of movies
+        print(f"Filtered movies: {filtered_movies}")
+
         return jsonify({"movies": filtered_movies})
 
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
+
 
    
 # create a new user
