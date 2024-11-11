@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import styles from './MovieDetailsPage.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { useUser } from '../../context/UserContext';
+import API_BASE_URL from '../../api';
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
@@ -21,7 +22,7 @@ const MovieDetailsPage = () => {
     useEffect(() => {
         const fetchMovieDetails = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/movie/${id}`);
+                const response = await fetch(`${API_BASE_URL}/movie/${id}`);
                 if (!response.ok) throw new Error('Failed to fetch movie details');
                 const data = await response.json();
                 setMovie(data);
@@ -35,7 +36,7 @@ const MovieDetailsPage = () => {
     
         const checkIfInWatchlist = async () => {
             try {
-                const response = await fetch(`http://localhost:8000/watchlist/${user.user_id}`, {
+                const response = await fetch(`${API_BASE_URL}/watchlist/${user.user_id}`, {
                     method: 'GET',
                     headers: {
                       "Content-Type": "application/json",
@@ -57,14 +58,10 @@ const MovieDetailsPage = () => {
         checkIfInWatchlist();
     }, [id]);
 
-    useEffect(() => {
-        console.log('movies', movie)
-    }, [movie])
-
     const handleToggleWatchlist = async () => {
         try {
             const endpoint = isInWatchlist ? 'remove_from_watchlist' : 'add_to_watchlist';
-            const response = await fetch(`http://localhost:8000/${endpoint}`, {
+            const response = await fetch(`${API_BASE_URL}/${endpoint}`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_id: user.user_id, movie_id: id }),
@@ -88,6 +85,8 @@ const MovieDetailsPage = () => {
         }
     };
 
+
+
     const handleRatingChange = (e) => {
         setRating(Number(e.target.value));
     };
@@ -101,7 +100,7 @@ const MovieDetailsPage = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8000/movies/${id}/rate`, {
+            const response = await fetch(`${API_BASE_URL}/movies/${id}/rate`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
@@ -140,23 +139,15 @@ const MovieDetailsPage = () => {
                     <>
                         <h1>{movie.movie_title}</h1>
                         <img src={movie.movie_poster} alt={`${movie.movie_title} poster`} />
-                        
-                        {/* Display Movie Details */}
-                        <p><strong>Genres:</strong> {movie.genre.replace(/{|}/g, '').split(',').join(', ')}</p>
-                        <p><strong>Description:</strong> {movie.movie_desc}</p>
-                        <p><strong>Top Actors:</strong> {movie.top_actors.replace(/{|}/g, '').split(',').join(', ')}</p>
-                        <p><strong>Director:</strong> {movie.director}</p>
-
+                        <p><strong>Genres:</strong> {movie.tags}</p>
                         <button className={styles['watchlist-button']} onClick={handleToggleWatchlist}>
                             {isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
                         </button>
-
                         {showMessage && (
                             <p className={`${styles.message} ${showMessage ? styles.fadeInOut : ''}`}>
                                 {watchlistMessage}
                             </p>
                         )}
-
                         <div className={styles['rating-container']}>
                             <p className={styles['movie-ratings']}><strong>Rate Movie:</strong></p>
                             <input
@@ -169,7 +160,6 @@ const MovieDetailsPage = () => {
                             />
                             <button className={styles['submit-button']} onClick={handleSubmitRating}>Submit</button>
                             <p className={styles['average-rating']}><strong>Average Rating:</strong> {averageRating.toFixed(1)}</p>
-                            
                             {showMessage && (
                                 <p className={`${styles.message} ${showMessage ? styles.fadeInOut : ''}`}>
                                     {ratingMessage}
