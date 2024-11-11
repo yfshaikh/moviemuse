@@ -64,7 +64,7 @@ function HomePage() {
           <h2>The Power of MovieMuse</h2>
           <p>Select your favorite genres to pinpoint your next favorite movie.</p>
           <div className={styles['text-container-btn']}>
-            <button className={styles['btn-inverted']} onClick={() => navigate('/movies')}>Discover Movies</button>
+            <button className={styles['btn-inverted']} onClick={() => navigate('/signup')}>Discover Movies</button>
           </div>
         </div>
         {genreDemoUrl && (
@@ -83,7 +83,7 @@ function HomePage() {
           <h2>Your Place for all Things Film</h2>
           <p>Join the conversation about anything and everything cinema.</p>
           <div className={styles['text-container-btn']}>
-            <button className={styles['btn-purp']} onClick={() => navigate('/forum')}>Discuss Movies</button>
+            <button className={styles['btn-purp']} onClick={() => navigate('/signup')}>Discuss Movies</button>
           </div>
         </div>
       </div>
