@@ -97,11 +97,32 @@ token generated using a test account Jdoe123@gmail.com with password 123456. The
 ## Inputs
 # 'test_search_movies_with_multiple_valid_genres
 - Any valid token
-- EX: "Toy Story"
+- EX: "Action" and "Comedy"
 
 ## test_search_movies_with_no_results
 - Any invalid token
-- EX: "Not a Movie"
+- EX: "NonExistentGenre"
+
+## sort_alphabetically_A_Z
+- Input: Movie names, movie genres, movie ratings
+
+## sort_alphabetically_Z_A
+-Input: Movie names, movie genres, movie ratings
+
+## sort_by_rating_high_to_low
+- Input: Movie names, movie genres, movie ratings 
+
+## sort_by_rating_low_to_high
+- Input: Movie names, movie genres, movie ratings
+
+## sort_by_maturity_R_G
+- Input: Movie names, movie genres, movie ratings
+
+## sort_by_maturity_G_R
+- Input: Movie names, movie genres, movie ratings
+
+# delete_movie_from_watchlist
+- Token: Movie ID
 
 ## Outputs
 # test_search_movies_with_multiple_valid_genres
@@ -109,3 +130,24 @@ token generated using a test account Jdoe123@gmail.com with password 123456. The
 
 # test_search_movies_with_no_results
 - OK: Nothing shows up on the screen 
+
+## sort_alphabetically_A_Z
+- Sorted by title A-Z
+
+## sort_alphabetically_Z_A
+- Sorted by title Z-A
+
+## sort_by_rating_high_to_low
+- Sorted by rating high-low
+
+## sort_by_rating_low_to_high
+- Sorted by rating low-high
+
+## sort_by_maturity_R_G
+- Sorted by maturity rating R-G
+
+## sort_by_maturity_G_R
+- Sorted by maturity rating G-R
+
+# delete_movie_from_watchlist
+- Movie is deleted
