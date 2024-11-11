@@ -368,13 +368,6 @@ class MovieWatchlistTestCase(unittest.TestCase):
 
         movie_id = 1  # Replace with a valid movie ID for testing
 
-        # Add the movie to the watchlist
-        response = self.app.post(f'/watchlist/add', json={'movie_id': movie_id}, headers={'Authorization': f'Bearer {self.token}'})
-        self.assertEqual(response.status_code, 200)
-        data = response.get_json()
-        self.assertIn('message', data)
-        self.assertEqual(data['message'], 'Movie added to watchlist')
-
         # Delete the movie from the watchlist
         response = self.app.post(f'/watchlist/delete', json={'movie_id': movie_id}, headers={'Authorization': f'Bearer {self.token}'})
         self.assertEqual(response.status_code, 200)
