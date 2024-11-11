@@ -77,9 +77,10 @@ def search_movies():
         movie_title = request.args.get('title', '').strip()
         user_genres = request.args.getlist('genres')
 
-        # validate that at least a movie title is provided
-        if not movie_title or not user_genres:
+        # validate that at least a movie title or a genre is provided
+        if not movie_title and len(user_genres) == 0:
             return jsonify({'error': 'Please provide a movie title or a genre'}), 400
+
 
         # Connect to the movie database
         conn = get_db_connection()
