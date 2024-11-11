@@ -357,16 +357,18 @@ def get_movie_details(movie_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count FROM movies WHERE movie_id = %s", (movie_id,))
+        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count, movie_desc, director FROM movies WHERE movie_id = %s", (movie_id,))
         movie = cursor.fetchone()
         if movie:
-            movie_title, tags, movie_poster, rating, rating_count = movie
+            movie_title, tags, movie_poster, rating, rating_count, movie_desc, director = movie
             average_rating = rating / rating_count if rating_count > 0 else 0
             movie_details = {
                 "movie_title": movie_title,
                 "tags": tags,
                 "movie_poster": movie_poster,
-                "average_rating": average_rating
+                "average_rating": average_rating,
+                "movie_desc": movie_desc,
+                "director": director
             }
             return jsonify(movie_details), 200
         else:
