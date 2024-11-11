@@ -72,8 +72,8 @@ def decode_token(token):
 def search_movies():
     try:
         # --- Genre Search ---
-
-        # get genres and title from URL 
+        
+        # Get title and genres from URL
         movie_title = request.args.get('title', '').strip()
         user_genres = request.args.getlist('genres')
 
@@ -81,7 +81,7 @@ def search_movies():
         print(f"Search title: '{movie_title}'")
         print(f"User genres: {user_genres}")
 
-        # validate that at least a movie title is provided
+        # Validate that at least a movie title is provided
         if not movie_title:
             print("Error: No movie title provided")
             return jsonify({'error': 'No movie title provided'}), 400
@@ -92,13 +92,17 @@ def search_movies():
 
         # --------------------- GENRE VALIDATION ---------------------
 
-        # fetch all genres from movie table
+        # Fetch all genres from movie table
         cursor.execute("""
             SELECT DISTINCT genre
             FROM movies
             WHERE genre IS NOT NULL
         """)
-        existing_genres = set(genre[0].strip().lower() for genre in cursor.fetchall())
+        existing_genres = set()
+        for genre in cursor.fetchall():
+            # Ensure each genre in the comma-separated list is stripped and stored as lowercase
+            genre_list = [g.strip().lower() for g in genre[0].split(',') if g.strip()]
+            existing_genres.update(genre_list)
 
         # Debugging: Log existing genres in the database
         print(f"Existing genres in the database: {existing_genres}")
@@ -116,39 +120,42 @@ def search_movies():
             WHERE LOWER(movie_title) LIKE LOWER(%s)
         """, (f'%{movie_title}%',))
 
-        # fetch matching movie entries
+        # Fetch matching movie entries
         movies = cursor.fetchall()
 
         # Debugging: Log the number of movies fetched
         print(f"Number of movies found based on title: {len(movies)}")
 
-        # if no movies found based on the title, return an empty list
+        # If no movies found based on the title, return an empty list
         if not movies:
             print("No movies found with the provided title")
             return jsonify({"movies": []})
 
-        # close the connection after fetching results
+        # Close the connection after fetching results
         conn.commit()
         cursor.close()
         conn.close()
 
-        # filter results by genres if any genres were provided
+        # Filter results by genres if any genres were provided
         filtered_movies = []
         for movie in movies:
             movie_id, title, genre, poster = movie
-            movie_genres = set(genre.strip().lower().split(','))
+            if genre:  # Ensure genre is not None or empty
+                movie_genres = set(g.strip().lower() for g in genre.split(',') if g.strip())
 
-            # Debugging: Log movie genre comparison
-            print(f"Movie: '{title}' with genres: {movie_genres}")
+                # Debugging: Log movie genre comparison
+                print(f"Movie: '{title}' with genres: {movie_genres}")
 
-            # if no genres were provided, include all movies
-            if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
-                filtered_movies.append({
-                    "movie_id": movie_id,
-                    "title": title,
-                    "genre": genre,
-                    "poster": poster
-                })
+                # If no genres were provided, include all movies
+                if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
+                    filtered_movies.append({
+                        "movie_id": movie_id,
+                        "title": title,
+                        "genre": genre,
+                        "poster": poster
+                    })
+            else:
+                print(f"Skipping movie '{title}' because it has no genre")
 
         # Debugging: Log the final filtered list of movies
         print(f"Filtered movies: {filtered_movies}")
@@ -158,6 +165,7 @@ def search_movies():
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
+
 
 
    
