@@ -140,6 +140,8 @@ const MovieDetailsPage = () => {
                         <h1>{movie.movie_title}</h1>
                         <img src={movie.movie_poster} alt={`${movie.movie_title} poster`} />
                         <p><strong>Genres:</strong> {movie.tags}</p>
+                        <p><strong>Description:</strong> {movie.movie_desc}</p>
+                        <p><strong>Director:</strong> {movie.director}</p>
                         <button className={styles['watchlist-button']} onClick={handleToggleWatchlist}>
                             {isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
                         </button>
