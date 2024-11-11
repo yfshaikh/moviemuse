@@ -89,19 +89,20 @@ def search_movies():
 
         # fetch all genres from movie table
         cursor.execute("""
-            SELECT DISTINCT LOWER(unnest(string_to_array(tags, ','))) AS tag
+            SELECT DISTINCT genre
             FROM movies
+            WHERE genre IS NOT NULL
         """)
-        existing_tags = set(tag[0].strip().lower() for tag in cursor.fetchall())
+        existing_genres = set(genre[0].strip().lower() for genre in cursor.fetchall())
 
         # Check for any genres that don’t exist in the database
-        invalid_genres = [genre.lower() for genre in user_genres if genre.lower() not in existing_tags]
+        invalid_genres = [genre.lower() for genre in user_genres if genre.lower() not in existing_genres]
         if invalid_genres:
             return jsonify({'error': f'Invalid genre(s): {", ".join(invalid_genres)}'}), 400
 
         # --- Title Search ---
         cursor.execute("""
-            SELECT movie_id, movie_title, tags, movie_poster 
+            SELECT movie_id, movie_title, genre, movie_poster 
             FROM movies 
             WHERE LOWER(movie_title) LIKE LOWER(%s)
         """, (f'%{movie_title}%',))
@@ -112,7 +113,7 @@ def search_movies():
         # if no movies found based on the title, return an empty list
         if not movies:
             return jsonify({"movies": []})
-        
+
         # close the connection after fetching results
         conn.commit()
         cursor.close()
@@ -121,15 +122,15 @@ def search_movies():
         # filter results by genres if any genres were provided
         filtered_movies = []
         for movie in movies:
-            movie_id, title, tags, poster = movie
-            movie_genres = set(tag.strip().lower() for tag in tags.split(','))
-            
+            movie_id, title, genre, poster = movie
+            movie_genres = set(genre.strip().lower().split(','))
+
             # if no genres were provided, include all movies
             if not user_genres or any(genre.lower() in movie_genres for genre in user_genres):
                 filtered_movies.append({
                     "movie_id": movie_id,
                     "title": title,
-                    "tags": tags,
+                    "genre": genre,
                     "poster": poster
                 })
 
@@ -356,24 +357,40 @@ def get_movie_details(movie_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count FROM movies WHERE movie_id = %s", (movie_id,))
+        
+        # Query for movie details, including genre, movie description, top actors, and director
+        cursor.execute("""
+            SELECT movie_title, genre, movie_desc, top_actors, director, movie_poster, rating, rating_count
+            FROM movies
+            WHERE movie_id = %s
+        """, (movie_id,))
+        
         movie = cursor.fetchone()
+        
         if movie:
-            movie_title, tags, movie_poster, rating, rating_count = movie
+            movie_title, genre, movie_desc, top_actors, director, movie_poster, rating, rating_count = movie
+            
+            # Calculate average rating
             average_rating = rating / rating_count if rating_count > 0 else 0
+            
+            # Create movie details dictionary
             movie_details = {
                 "movie_title": movie_title,
-                "tags": tags,
+                "genre": genre,
+                "movie_desc": movie_desc,
+                "top_actors": top_actors,
+                "director": director,
                 "movie_poster": movie_poster,
                 "average_rating": average_rating
             }
+            
             return jsonify(movie_details), 200
         else:
             return jsonify({"error": "Movie not found"}), 404
+
     except Exception as e:
         print(f"Error: {e}")
-        return jsonify({"error": "Internal Server Error"}), 500
-    
+        return jsonify({"error": "Internal Server Error"}), 500  
     
 @app.route('/forum', methods=['POST'])
 def add_forum_post():
