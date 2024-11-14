@@ -445,7 +445,7 @@ def fetch_forum_posts():
     return jsonify({ "forumPosts": [{"id": post[0],"userID": post[1], "title": post[2], 
                                      "post": post[3], "tags": post[4], "author": post[5], 
                                      "views": post[6], "likes": post[7], "comments": post[8],
-                                     "comments_count": post[7]} for post in table]}), 200
+                                     "comments_count": post[9]} for post in table]}), 200
 
 @app.route('/movies/<int:movie_id>/rate', methods=['POST'])
 def rate_movie(movie_id):
