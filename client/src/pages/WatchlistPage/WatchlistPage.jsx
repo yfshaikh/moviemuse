@@ -11,7 +11,7 @@ const WatchlistPage = () => {
   const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+ 
   useEffect(() => {
     const fetchWatchlist = async () => {
       try {
@@ -35,7 +35,7 @@ const WatchlistPage = () => {
     };
 
     fetchWatchlist();
-  }, [user.user_id]);
+  }, []);
 
   if (loading) return <div className={styles['loading']}>Loading...</div>;
   if (error) return <div className={styles['error']}>{error}</div>;

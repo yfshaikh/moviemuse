@@ -19,7 +19,7 @@ function ForumPage() {
   const [comments, setComments] = useState({}); // State for fetched comments
   const [loadingComments, setLoadingComments] = useState({}); // Track loading state for comments
   const [userProfilePics, setUserProfilePics] = useState({});
-
+ 
   // Fetch posts and comments
   useEffect(() => {
     const fetchPosts = async () => {
