@@ -16,7 +16,7 @@ const WatchlistPage = () => {
     const fetchWatchlist = async () => {
       // Wait for the user to load
       if (!user) {
-        console.log("User is not available yet, waiting...");
+        console.log("User context is not available yet, skipping fetch.");
         return;
       }
 
@@ -64,7 +64,7 @@ const WatchlistPage = () => {
         if (data.error) {
           setError(data.error);
         } else {
-          setWatchlist(data.watchlist);
+          setWatchlist(data.watchlist || []);
         }
       } catch (err) {
         console.error("An error occurred while fetching the watchlist:", err);
@@ -74,8 +74,10 @@ const WatchlistPage = () => {
       }
     };
 
-    // Attempt to fetch the watchlist
-    fetchWatchlist();
+    // Attempt to fetch the watchlist only if the user exists
+    if (user) {
+      fetchWatchlist();
+    }
   }, [user, token]);
 
   if (!user) return <div className={styles['loading']}>Loading user information...</div>;
