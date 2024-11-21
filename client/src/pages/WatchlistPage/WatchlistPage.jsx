@@ -14,17 +14,21 @@ const WatchlistPage = () => {
  
   useEffect(() => {
     const fetchWatchlist = async () => {
-      console.log("Fetching watchlist...");
+      if (!user || !user.user_id) {
+        console.error("User context is not available or invalid:", user);
+        setError("User is not logged in. Please log in again.");
+        setLoading(false);
+        return;
+      }
   
-      // Check if token exists
       if (!token) {
-        console.error("No token found. User might need to log in.");
+        console.error("Token is missing or invalid.");
         setError("You need to log in again.");
         setLoading(false);
         return;
       }
   
-      console.log("Token:", token);
+      console.log("Fetching watchlist for user ID:", user.user_id);
   
       try {
         const response = await fetch(`${API_BASE_URL}/watchlist/${user.user_id}`, {
@@ -37,16 +41,14 @@ const WatchlistPage = () => {
   
         console.log("Response status:", response.status);
   
-        // Handle unauthorized access
         if (response.status === 401) {
-          console.warn("Unauthorized access. Clearing token and prompting user to log in.");
+          console.warn("Unauthorized. Clearing token and prompting login.");
           setError("Session expired. Please log in again.");
           localStorage.removeItem('token');
           return;
         }
   
         if (!response.ok) {
-          console.error("Failed to fetch watchlist:", response.status, response.statusText);
           throw new Error(`Error: ${response.status}`);
         }
   
@@ -54,7 +56,6 @@ const WatchlistPage = () => {
         console.log("Fetched watchlist data:", data);
   
         if (data.error) {
-          console.error("API returned an error:", data.error);
           setError(data.error);
         } else {
           setWatchlist(data.watchlist);
@@ -63,14 +64,13 @@ const WatchlistPage = () => {
         console.error("An error occurred while fetching the watchlist:", err);
         setError("An error occurred while fetching the watchlist.");
       } finally {
-        console.log("Fetching watchlist completed.");
         setLoading(false);
       }
     };
   
-    console.log("User ID:", user.user_id);
     fetchWatchlist();
-  }, [user.user_id, token]);
+  }, [user, token]);
+  
   
 
   if (loading) return <div className={styles['loading']}>Loading...</div>;
