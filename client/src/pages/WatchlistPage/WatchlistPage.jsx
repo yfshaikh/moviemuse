@@ -14,28 +14,64 @@ const WatchlistPage = () => {
  
   useEffect(() => {
     const fetchWatchlist = async () => {
+      console.log("Fetching watchlist...");
+  
+      // Check if token exists
+      if (!token) {
+        console.error("No token found. User might need to log in.");
+        setError("You need to log in again.");
+        setLoading(false);
+        return;
+      }
+  
+      console.log("Token:", token);
+  
       try {
         const response = await fetch(`${API_BASE_URL}/watchlist/${user.user_id}`, {
           method: 'GET',
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }, 
+            "Authorization": `Bearer ${token}`,
+          },
         });
-        if (!response.ok) throw new Error(`Error: ${response.status}`);
-
+  
+        console.log("Response status:", response.status);
+  
+        // Handle unauthorized access
+        if (response.status === 401) {
+          console.warn("Unauthorized access. Clearing token and prompting user to log in.");
+          setError("Session expired. Please log in again.");
+          localStorage.removeItem('token');
+          return;
+        }
+  
+        if (!response.ok) {
+          console.error("Failed to fetch watchlist:", response.status, response.statusText);
+          throw new Error(`Error: ${response.status}`);
+        }
+  
         const data = await response.json();
-        if (data.error) setError(data.error);
-        else setWatchlist(data.watchlist);
+        console.log("Fetched watchlist data:", data);
+  
+        if (data.error) {
+          console.error("API returned an error:", data.error);
+          setError(data.error);
+        } else {
+          setWatchlist(data.watchlist);
+        }
       } catch (err) {
+        console.error("An error occurred while fetching the watchlist:", err);
         setError("An error occurred while fetching the watchlist.");
       } finally {
+        console.log("Fetching watchlist completed.");
         setLoading(false);
       }
     };
-
+  
+    console.log("User ID:", user.user_id);
     fetchWatchlist();
-  }, []);
+  }, [user.user_id, token]);
+  
 
   if (loading) return <div className={styles['loading']}>Loading...</div>;
   if (error) return <div className={styles['error']}>{error}</div>;
