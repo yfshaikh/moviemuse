@@ -26,13 +26,7 @@ load_dotenv()
 def get_db_connection():
     localtesting = False
     if localtesting:
-        conn = psycopg2.connect(
-            host="localhost",  
-            database="moviemuse",  
-            user=os.getenv("USER"),  
-            password=os.getenv("PASSWORD"),  
-            port="5433"  
-        )
+        conn = psycopg2.connect(os.getenv("POSTGRES_LOCAL_URL"))
     else:
         conn = psycopg2.connect(
             host=os.getenv("POSTGRES_HOST"),
