@@ -11,25 +11,31 @@ const WatchlistPage = () => {
   const [watchlist, setWatchlist] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
- 
+
   useEffect(() => {
     const fetchWatchlist = async () => {
-      if (!user || !user.user_id) {
-        console.error("User context is not available or invalid:", user);
+      // Wait for the user to load
+      if (!user) {
+        console.log("User is not available yet, waiting...");
+        return;
+      }
+
+      if (!user.user_id) {
+        console.error("Invalid user context:", user);
         setError("User is not logged in. Please log in again.");
         setLoading(false);
         return;
       }
-  
+
       if (!token) {
         console.error("Token is missing or invalid.");
         setError("You need to log in again.");
         setLoading(false);
         return;
       }
-  
+
       console.log("Fetching watchlist for user ID:", user.user_id);
-  
+
       try {
         const response = await fetch(`${API_BASE_URL}/watchlist/${user.user_id}`, {
           method: 'GET',
@@ -38,23 +44,23 @@ const WatchlistPage = () => {
             "Authorization": `Bearer ${token}`,
           },
         });
-  
+
         console.log("Response status:", response.status);
-  
+
         if (response.status === 401) {
           console.warn("Unauthorized. Clearing token and prompting login.");
           setError("Session expired. Please log in again.");
           localStorage.removeItem('token');
           return;
         }
-  
+
         if (!response.ok) {
           throw new Error(`Error: ${response.status}`);
         }
-  
+
         const data = await response.json();
         console.log("Fetched watchlist data:", data);
-  
+
         if (data.error) {
           setError(data.error);
         } else {
@@ -67,12 +73,12 @@ const WatchlistPage = () => {
         setLoading(false);
       }
     };
-  
+
+    // Attempt to fetch the watchlist
     fetchWatchlist();
   }, [user, token]);
-  
-  
 
+  if (!user) return <div className={styles['loading']}>Loading user information...</div>;
   if (loading) return <div className={styles['loading']}>Loading...</div>;
   if (error) return <div className={styles['error']}>{error}</div>;
 
