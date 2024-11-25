@@ -28,28 +28,54 @@ export const UserProvider = ({ children }) => {
     }, []);
 
     // Function to check admin status
-    const checkAdminStatus = async () => {
-      const token = localStorage.getItem('token');
-      try {
-          const response = await fetch(`${API_BASE_URL}/check-admin`, {
-              method: 'GET',
-              headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${token}`, 
-              },
-          });
+const checkAdminStatus = async () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    console.error('No token found in localStorage');
+    return;
+  }
 
-          if (response.ok) {
-              const data = await response.json();
-              setIsAdmin(data.is_admin); // Store admin status in state
-              console.log('Admin status:', data.is_admin);
-          } else {
-              console.error('Failed to check admin status');
-          }
-      } catch (error) {
-          console.error('Error checking admin status:', error);
-      }
-  };
+  console.log('Checking admin status with token:', token);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/check-admin`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    console.log('Admin status endpoint response status:', response.status);
+
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Admin status response data:', data);
+      setIsAdmin(data.is_admin); // Store admin status in state
+      console.log('Admin status updated in state:', data.is_admin);
+    } else {
+      console.error(
+        'Failed to check admin status. Response:',
+        await response.text()
+      );
+    }
+  } catch (error) {
+    console.error('Error checking admin status:', error);
+  }
+};
+
+// useEffect to check admin status on load
+useEffect(() => {
+  const token = localStorage.getItem('token');
+  console.log('Checking admin status on mount. Token:', token);
+
+  if (token) {
+    checkAdminStatus();
+  } else {
+    console.warn('No token found in localStorage on mount.');
+  }
+}, []);
+
 
     // log in and store user info
     const login = (userData, token) => {
