@@ -117,3 +117,6 @@ CREATE TABLE postComments (
 ALTER TABLE forumPosts
 ADD COLUMN comments_count INTEGER DEFAULT 0;
 
+ALTER TABLE users ADD COLUMN is_admin BOOLEAN DEFAULT FALSE;
+
+

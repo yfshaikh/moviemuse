@@ -607,7 +607,7 @@ def get_comments(post_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        
+
         # Query the postComments table to fetch comments for the specific post
         query = """
             SELECT pc.id, pc.userID, u.username, pc.commentText, pc.createdAt
@@ -619,8 +619,9 @@ def get_comments(post_id):
         cursor.execute(query, (post_id,))
         comments = cursor.fetchall()
 
+        # If no comments exist, return an empty list
         if not comments:
-            return jsonify({"message": "No comments found for this post."}), 404
+            return jsonify([]), 200  # Return empty list with 200 OK status
 
         # Format the result as a list of dictionaries
         formatted_comments = [
@@ -694,17 +695,112 @@ def get_user_profile_pic(user_id):
         cursor = conn.cursor()
         cursor.execute("SELECT image_url FROM users WHERE id = %s", (user_id,))
         user = cursor.fetchone()
+
         if user:
-            image_url = user[0] 
+            image_url = user[0]
+            # If there's a profile picture, return it
             if image_url:
                 return jsonify({"image_url": image_url}), 200
             else:
-                return jsonify({"error": "Profile picture not found"}), 404
+                # If no profile picture, return empty field
+                return jsonify({"image_url": ""}), 200
         else:
             return jsonify({"error": "User not found"}), 404
     except Exception as e:
         print(f"Error: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
+
+
+@app.route('/check-admin', methods=['GET'])
+def check_admin():
+    auth_header = request.headers.get("Authorization", None)
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    
+    # Extract the token from "Bearer <token>"
+    token = auth_header.split(" ")[1] if auth_header.startswith("Bearer ") else auth_header
+
+    # Decode the token
+    decoded = decode_token(token)
+    if not decoded["valid"]:
+        return jsonify({"error": decoded["error"]}), 401
+
+    user_id = decoded["user_id"]
+    
+    conn = None
+    cursor = None
+    try:
+        # Connect to the database
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        # Check if the user is an admin
+        cursor.execute("SELECT is_admin FROM users WHERE id = %s", (user_id,))
+        result = cursor.fetchone()
+
+        if result is None:
+            return jsonify({"error": "User not found"}), 404
+
+        is_admin = result[0]
+        return jsonify({"is_admin": is_admin}), 200
+
+    except Exception as e:
+        print("Error checking admin status:", e)
+        return jsonify({"error": "Internal Server Error"}), 500
+
+    finally:
+        if cursor is not None:
+            cursor.close()
+        if conn is not None:
+            conn.close()
+
+
+@app.route('/forum/<int:post_id>', methods=['DELETE'])
+def delete_forum_post(post_id):
+    # Extract the authorization token from the request headers
+    auth_header = request.headers.get("Authorization", None)
+    if not auth_header:
+        return jsonify({"error": "Authorization header missing"}), 401
+    
+    # Extract the token from "Bearer <token>"
+    token = auth_header.split(" ")[1] if auth_header.startswith("Bearer ") else auth_header
+
+    # Decode the token to get user details
+    decoded = decode_token(token)
+    if not decoded["valid"]:
+        return jsonify({"error": decoded["error"]}), 401
+
+    user_id = decoded["user_id"]
+    
+    # Connect to the database
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Internal Server Error"}), 500
+
+    # Delete all comments associated with the post
+    try:
+        delete_comments_query = "DELETE FROM postComments WHERE postID = %s"
+        cursor.execute(delete_comments_query, (post_id,))
+        
+        # Delete the forum post
+        delete_post_query = "DELETE FROM forumPosts WHERE id = %s AND userID = %s"
+        cursor.execute(delete_post_query, (post_id, user_id))
+        conn.commit()
+
+        # Check if the post was deleted
+        if cursor.rowcount == 0:
+            return jsonify({"error": "Post not found or user not authorized to delete"}), 404
+
+        cursor.close()
+        conn.close()
+
+        return jsonify({"message": "Post and associated comments deleted successfully"}), 200
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Error deleting post or comments"}), 500
 
 
 if __name__ == '__main__':

@@ -14,6 +14,7 @@ export const useUser = () => useContext(UserContext);
 export const UserProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [pfp, setPfp] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
 
     // check if user is logged in by checking for a JWT token
     useEffect(() => {
@@ -22,8 +23,33 @@ export const UserProvider = ({ children }) => {
             const userInfo = jwtDecode(token);  // decodes and retrieves user info from JWT
             console.log("Decoded JWT:", userInfo);
             setUser(userInfo);
+            checkAdminStatus(); // Check admin status upon login
         }
     }, []);
+
+    // Function to check admin status
+    const checkAdminStatus = async () => {
+      const token = localStorage.getItem('token');
+      try {
+          const response = await fetch(`${API_BASE_URL}/check-admin`, {
+              method: 'GET',
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${token}`, 
+              },
+          });
+
+          if (response.ok) {
+              const data = await response.json();
+              setIsAdmin(data.is_admin); // Store admin status in state
+              console.log('Admin status:', data.is_admin);
+          } else {
+              console.error('Failed to check admin status');
+          }
+      } catch (error) {
+          console.error('Error checking admin status:', error);
+      }
+  };
 
     // log in and store user info
     const login = (userData, token) => {
@@ -116,7 +142,7 @@ export const UserProvider = ({ children }) => {
 
 
     return (
-        <UserContext.Provider value={{ user, setUser, pfp, setPfp, updatePfp, logout, login, postProfile }}>
+        <UserContext.Provider value={{ user, setUser, pfp, setPfp, updatePfp, logout, login, postProfile, isAdmin }}>
             {children}
         </UserContext.Provider>
     );
