@@ -24,7 +24,7 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    localtesting = False
+    localtesting = True
     if localtesting:
         conn = psycopg2.connect(os.getenv("POSTGRES_LOCAL_URL"))
     else:
@@ -649,8 +649,13 @@ def get_comments(post_id):
 @app.route('/update_profile_picture', methods=['POST'])
 def update_profile_picture():
 
+    # Debugging: Log the incoming request headers and body
+    print("Headers:", request.headers)
+    print("Body:", request.json)
+
     auth_header = request.headers.get("Authorization", None)
     if not auth_header:
+        print("Error: Authorization header missing")
         return jsonify({"error": "Authorization header missing"}), 401
     
     # Extract the token from "Bearer <token>"
@@ -659,34 +664,47 @@ def update_profile_picture():
     # Decode the token
     decoded = decode_token(token)
     if not decoded["valid"]:
+        print("Error: Invalid token")
         return jsonify({"error": decoded["error"]}), 401
 
     user_id = decoded["user_id"]
 
     data = request.json
+    if not data:
+        print("Error: No JSON data received")
+        return jsonify({"error": "Invalid request body"}), 400
+
     image_url = data.get('image_url')
     if not image_url:
+        print("Error: No image_url provided")
         return jsonify({"error": "No image_url provided"}), 400
     
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error connecting to database: {e}")
         return jsonify({"error": "Internal Server Error"}), 500
 
     # Update the user's profile picture URL in the database
-    query = """
-        UPDATE users
-        SET image_url = %s
-        WHERE id = %s
-    """
-    cursor.execute(query, (image_url, user_id))
-    conn.commit()
-    cursor.close()
-    conn.close()
+    try:
+        query = """
+            UPDATE users
+            SET image_url = %s
+            WHERE id = %s
+        """
+        cursor.execute(query, (image_url, user_id))
+        conn.commit()
+        print(f"Profile picture updated for user {user_id}")
+    except Exception as e:
+        print(f"Error updating profile picture: {e}")
+        return jsonify({"error": "Database update failed"}), 500
+    finally:
+        cursor.close()
+        conn.close()
 
     return jsonify({"message": "Profile picture updated successfully"}), 200
+
 
 @app.route('/user/<int:user_id>/profile_pic', methods=['GET'])
 def get_user_profile_pic(user_id):

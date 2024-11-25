@@ -63,66 +63,69 @@ export const UserProvider = ({ children }) => {
         setUser(null);
     };
 
-     // update pfp
-     const updatePfp = async (file) => {
-        console.log('user_id: ', user.user_id)
-        if(user && user.user_id) {
-            const userId = String(user.user_id);
-            const storageRef = ref(storage, `profilePictures/${userId}`);
-         
-            try {
-                // Upload the file to Firebase Storage
-                await uploadBytes(storageRef, file);
-                const downloadURL = await getDownloadURL(storageRef);
-        
-                console.log("Uploaded profile picture:", downloadURL);
-        
-                // Reference to the user's document in Firestore
-                const userDocRef = doc(db, 'user_profiles', userId); // Use user_id as the document ID
-        
-                // Check if the user's document exists
-                const userDoc = await getDoc(userDocRef);
-        
-                if (userDoc.exists()) {
-                // If the document exists, update the profile picture URL
-                await updateDoc(userDocRef, { profilePicture: downloadURL });
-                console.log("Profile picture URL updated in Firestore");
-                } else {
-                // If the document doesn't exist, create a new document with the profile picture URL
-                await setDoc(userDocRef, { profilePicture: downloadURL });
-                console.log("New user document created with profile picture URL");
-                }
-            } catch (error) {
-                console.error("Error uploading profile picture:", error);
-            }
-                }
-    };
+  // update pfp and return the downloadURL
+  const updatePfp = async (file) => {
+    console.log('user_id: ', user.user_id);
+    if (user && user.user_id) {
+      const userId = String(user.user_id);
+      const storageRef = ref(storage, `profilePictures/${userId}`);
 
+      try {
+        // Upload the file to Firebase Storage
+        await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(storageRef);
 
-    // update SQL db
-    const postProfile = async () => {
-        const token = localStorage.getItem('token');
-        try {
-          const response = await fetch(`${API_BASE_URL}/update_profile_picture`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${token}`, 
-            },
-            body: JSON.stringify({image_url: pfp}),
-          });
-    
-          if (response.ok) {
-            const data = await response.json();
-            console.log('pfp updated successfully');
-    
-          } else {
-            console.log('Error updating pfp');
-          }
-        } catch (error) {
-          console.error('An error occurred:', error);
+        console.log("Uploaded profile picture:", downloadURL);
+
+        // Reference to the user's document in Firestore
+        const userDocRef = doc(db, 'user_profiles', userId); // Use user_id as the document ID
+
+        // Check if the user's document exists
+        const userDoc = await getDoc(userDocRef);
+
+        if (userDoc.exists()) {
+          // If the document exists, update the profile picture URL
+          await updateDoc(userDocRef, { profilePicture: downloadURL });
+          console.log("Profile picture URL updated in Firestore");
+        } else {
+          // If the document doesn't exist, create a new document with the profile picture URL
+          await setDoc(userDocRef, { profilePicture: downloadURL });
+          console.log("New user document created with profile picture URL");
         }
-      };
+
+        return downloadURL; // Return the downloadURL for use in postProfile
+      } catch (error) {
+        console.error("Error uploading profile picture:", error);
+        return null;
+      }
+    }
+  };
+     
+
+
+    // Update SQL DB
+  const postProfile = async (image_url) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await fetch(`${API_BASE_URL}/update_profile_picture`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
+        body: JSON.stringify({ image_url }), // Pass the image_url directly
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Profile picture updated successfully:', data);
+      } else {
+        console.log('Error updating profile picture:', response.statusText);
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
 
     useEffect(() => {
         // Fetch profile picture from Firestore on mount 

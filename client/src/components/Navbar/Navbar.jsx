@@ -28,12 +28,14 @@ function Navbar() {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      await updatePfp(file); 
-      await postProfile();
-      console.log(pfp)
+      const downloadURL = await updatePfp(file); // Wait for downloadURL from updatePfp
+      if (downloadURL) {
+        await postProfile(downloadURL); // Pass downloadURL to postProfile
+        window.location.reload()
+      }
     }
   };
-
+ 
 
 
 
