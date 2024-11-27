@@ -7,26 +7,28 @@ import API_BASE_URL from '../../api';
 function MoviePage() {
   const [query, setQuery] = useState('');
   const [selectedGenres, setSelectedGenres] = useState([]);
+  const [selectedMaturity, setSelectedMaturity] = useState(''); // State for maturity rating
   const [movies, setMovies] = useState([]);
   const [error, setError] = useState('');
 
   const genres = ['Action', 'Comedy', 'Drama', 'Sci-Fi', 'Thriller', 'Horror'];
+  const maturities = ['R', 'PG', 'PG-13', 'Approved', 'NC-17', 'G', 'Passed'];
 
   const handleSearch = async (e) => {
     e.preventDefault();
 
     try {
-      // build URL with query parameters
+      // Build URL with query parameters
       const url = new URL(`${API_BASE_URL}/search`);
       if (query) url.searchParams.append('title', query);
       selectedGenres.forEach((genre) => url.searchParams.append('genres', genre.toLowerCase()));
 
-      // fetch search results from the server
+      // Fetch search results from the server
       const response = await fetch(url);
       const data = await response.json();
       console.log(data);
 
-      // update the results or show an error message
+      // Update the results or show an error message
       if (response.ok) {
         setMovies(data.movies);
         setError('');
@@ -44,10 +46,15 @@ function MoviePage() {
   const handleGenreChange = (genre) => {
     setSelectedGenres((prevGenres) =>
       prevGenres.includes(genre)
-        ? prevGenres.filter((g) => g !== genre) // deselect genre if already selected
-        : [...prevGenres, genre] // select genre if not already selected
+        ? prevGenres.filter((g) => g !== genre) // Deselect genre if already selected
+        : [...prevGenres, genre] // Select genre if not already selected
     );
   };
+
+  // Filter movies based on maturity
+  const filteredMovies = selectedMaturity
+    ? movies.filter((movie) => movie.maturity === selectedMaturity)
+    : movies;
 
   return (
     <>
@@ -78,6 +85,20 @@ function MoviePage() {
             ))}
           </div>
 
+          {/* Maturity Rating Dropdown */}
+          <select
+            value={selectedMaturity}
+            onChange={(e) => setSelectedMaturity(e.target.value)}
+            className={styles['maturity-dropdown']}
+          >
+            <option value="">All Maturity Ratings</option>
+            {maturities.map((rating) => (
+              <option key={rating} value={rating}>
+                {rating}
+              </option>
+            ))}
+          </select>
+
           <button type="submit" className={styles['search-button']}>Search</button>
         </form>
 
@@ -86,14 +107,13 @@ function MoviePage() {
           <p className={styles['error-message']}>{error}</p>
         ) : (
           <ul className={styles['results']}>
-            {movies.map((movie) => (
+            {filteredMovies.map((movie) => (
                <li key={movie.movie_id} className={styles['movie-item']}>
-               <Link to={`/movie/${movie.movie_id}`} className={styles['movie-link']}>
-                   <img src={movie.poster} alt={movie.title} className={styles['movie-poster']} />
-                   <h3 className={styles['movie-title']}>{movie.title}</h3>
-               </Link>
-           </li>
-           
+                 <Link to={`/movie/${movie.movie_id}`} className={styles['movie-link']}>
+                     <img src={movie.poster} alt={movie.title} className={styles['movie-poster']} />
+                     <h3 className={styles['movie-title']}>{movie.title}</h3>
+                 </Link>
+               </li>
             ))}
           </ul>
         )}

@@ -4,6 +4,7 @@ import styles from './WatchlistPage.module.css';
 import { Link } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import API_BASE_URL from '../../api';
+import Loader from '../../components/Loader/Loader';
 
 const WatchlistPage = () => {
   const { user } = useUser();
@@ -81,7 +82,9 @@ const WatchlistPage = () => {
   }, [user, token]);
 
   if (!user) return <div className={styles['loading']}>Loading user information...</div>;
-  if (loading) return <div className={styles['loading']}>Loading...</div>;
+  if (loading) {
+    return <Loader />; // Show loading indicator while data is being fetched
+  }
   if (error) return <div className={styles['error']}>{error}</div>;
 
   return (

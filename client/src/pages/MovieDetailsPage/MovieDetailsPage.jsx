@@ -4,6 +4,7 @@ import styles from './MovieDetailsPage.module.css';
 import Navbar from '../../components/Navbar/Navbar';
 import { useUser } from '../../context/UserContext';
 import API_BASE_URL from '../../api';
+import Loader from '../../components/Loader/Loader';
 
 const MovieDetailsPage = () => {
     const { id } = useParams();
@@ -128,7 +129,9 @@ const MovieDetailsPage = () => {
         }
     };
 
-    if (loading) return <div>Loading...</div>;
+    if (loading) {
+        return <Loader />; // Show loading indicator while data is being fetched
+      }
     if (error) return <div>{error}</div>;
 
     return (
@@ -142,6 +145,7 @@ const MovieDetailsPage = () => {
                         <p><strong>Genres:</strong> {movie.tags}</p>
                         <p><strong>Description:</strong> {movie.movie_desc}</p>
                         <p><strong>Director:</strong> {movie.director}</p>
+                        <p><strong>Maturity:</strong> {movie.maturity}</p>
                         <button className={styles['watchlist-button']} onClick={handleToggleWatchlist}>
                             {isInWatchlist ? 'Remove from Watchlist' : 'Add to Watchlist'}
                         </button>

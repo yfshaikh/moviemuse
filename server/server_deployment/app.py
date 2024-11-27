@@ -24,7 +24,7 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    localtesting = False
+    localtesting = True
     if localtesting:
         conn = psycopg2.connect(os.getenv("POSTGRES_LOCAL_URL"))
     else:
@@ -96,7 +96,7 @@ def search_movies():
 
         # --- Title Search ---
         cursor.execute("""
-            SELECT movie_id, movie_title, tags, movie_poster 
+            SELECT movie_id, movie_title, tags, movie_poster, maturity 
             FROM movies 
             WHERE LOWER(movie_title) LIKE LOWER(%s)
         """, (f'%{movie_title}%',))
@@ -116,7 +116,7 @@ def search_movies():
         # filter results by genres if any genres were provided
         filtered_movies = []
         for movie in movies:
-            movie_id, title, tags, poster = movie
+            movie_id, title, tags, poster, maturity = movie
             movie_genres = set(tag.strip().lower() for tag in tags.split(','))
             
             # if no genres were provided, include all movies
@@ -125,7 +125,8 @@ def search_movies():
                     "movie_id": movie_id,
                     "title": title,
                     "tags": tags,
-                    "poster": poster
+                    "poster": poster,
+                    "maturity": maturity,
                 })
 
         return jsonify({"movies": filtered_movies})
@@ -352,10 +353,10 @@ def get_movie_details(movie_id):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count, movie_desc, director FROM movies WHERE movie_id = %s", (movie_id,))
+        cursor.execute("SELECT movie_title, tags, movie_poster, rating, rating_count, movie_desc, director, maturity FROM movies WHERE movie_id = %s", (movie_id,))
         movie = cursor.fetchone()
         if movie:
-            movie_title, tags, movie_poster, rating, rating_count, movie_desc, director = movie
+            movie_title, tags, movie_poster, rating, rating_count, movie_desc, director, maturity = movie
             average_rating = rating / rating_count if rating_count > 0 else 0
             movie_details = {
                 "movie_title": movie_title,
@@ -363,7 +364,8 @@ def get_movie_details(movie_id):
                 "movie_poster": movie_poster,
                 "average_rating": average_rating,
                 "movie_desc": movie_desc,
-                "director": director
+                "director": director,
+                "maturity": maturity
             }
             return jsonify(movie_details), 200
         else:
