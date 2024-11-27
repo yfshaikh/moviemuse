@@ -24,7 +24,7 @@ PORT=8000
 load_dotenv()
 
 def get_db_connection():
-    localtesting = True
+    localtesting = False
     if localtesting:
         conn = psycopg2.connect(os.getenv("POSTGRES_LOCAL_URL"))
     else:
