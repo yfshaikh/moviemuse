@@ -1,9 +1,9 @@
-import { HashLoader } from 'react-spinners'
+import { MoonLoader } from 'react-spinners'
 
 function Loader() {
   return (
     <div style={styles.container}>
-      <HashLoader color="#ffd57d" />
+      <MoonLoader color="#ffd57d" />
     </div>
   );
 }

@@ -60,6 +60,7 @@ function MoviePage() {
     <>
       <Navbar />
       <div className={styles['movie-page']}>
+        <div className={styles['top-container']}>
         <h1>Search for Movies</h1>
         <form onSubmit={handleSearch} className={styles['search-form']}>
           <input
@@ -101,7 +102,9 @@ function MoviePage() {
 
           <button type="submit" className={styles['search-button']}>Search</button>
         </form>
+        </div>
 
+        <div className='bottom-container'>
         {/* Display Results or Error */}
         {error ? (
           <p className={styles['error-message']}>{error}</p>
@@ -110,13 +113,14 @@ function MoviePage() {
             {filteredMovies.map((movie) => (
                <li key={movie.movie_id} className={styles['movie-item']}>
                  <Link to={`/movie/${movie.movie_id}`} className={styles['movie-link']}>
-                     <img src={movie.poster} alt={movie.title} className={styles['movie-poster']} />
+                     <img src={movie.poster} alt={movie.title} className={styles['movie-poster']} loading="lazy" />
                      <h3 className={styles['movie-title']}>{movie.title}</h3>
                  </Link>
                </li>
             ))}
           </ul>
         )}
+        </div>
       </div>
     </>
   );
