@@ -153,11 +153,12 @@ nav ul li {
 
 .upload {
   background-color: transparent;
-  border: 1px solid #4CAF50;
+  border: 1px solid var(--yellow);
 }
 
 .upload:hover {
-  background-color: #4CAF50;
+  background-color: var(--yellow);
+  color: var(--grey);
 }
 
 .button-container {

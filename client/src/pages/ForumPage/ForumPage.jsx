@@ -70,6 +70,9 @@ function ForumPage() {
 
       if (response.ok) {
         const commentsData = await response.json();
+
+        // Reverse the array to display in the order they were posted
+        const orderedComments = commentsData.reverse();
         
         // Check if no comments are found
         if (Array.isArray(commentsData) && commentsData.length === 0) {
@@ -80,7 +83,7 @@ function ForumPage() {
         } else {
           setComments((prevComments) => ({
             ...prevComments,
-            [postId]: commentsData, // Set comments for the specific post
+            [postId]: orderedComments, // Set comments for the specific post
           }));
         }
       } else {
