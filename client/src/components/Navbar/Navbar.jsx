@@ -3,17 +3,20 @@ import { json, Link, useNavigate } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { useUser } from '../../context/UserContext';
 import Popup from '../Popup/Popup.jsx';
-import { db, storage } from '../../firebase.js';
-import { doc, setDoc, updateDoc, getDoc, collection } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import API_BASE_URL from '../../api.jsx';
+import { FaExternalLinkAlt, FaBars, FaTimes } from 'react-icons/fa'
+
+
 
 function Navbar() {
   const { user, logout, pfp, updatePfp, postProfile } = useUser();
   const token = localStorage.getItem('token');
   const navigate = useNavigate();
   const [trigger, setTrigger] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null); 
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+  };
 
   const handleLogout = () => {
     logout();
@@ -78,16 +81,20 @@ function Navbar() {
       </Popup>
 
       <nav className={styles['navbar']}>
+        {/* Center the hamburger icon */}
+        <div className={styles['hamburger-icon']} onClick={toggleMenu}>
+          {menuOpen ? <FaTimes size={30} color="white" /> : <FaBars size={30} color="white" />}
+        </div>
         <div className={styles['left-container']}>
           <Link to="/">
             <img src="/images/moviemuseinverted.png" alt="logo" className={styles['navbar-logo']} />
           </Link>
           {user && (
-            <div className={styles['links-container']}>
-              <Link to="/movies" className={styles['nav-link']}>Movies</Link>
-              <Link to="/forum" className={styles['nav-link']}>Forum</Link>
-              <Link to="/watchlist" className={styles['nav-link']}>Watchlist</Link>
-            </div>
+            <ul className={`${styles['navList']} ${menuOpen ? styles['showMenu'] : ''}`}>
+              <li><Link to="/movies" className={styles['nav-link']}>Movies</Link></li>
+              <li><Link to="/forum" className={styles['nav-link']}>Forum</Link></li>
+              <li><Link to="/watchlist" className={styles['nav-link']}>Watchlist</Link></li>
+            </ul>
           )}
         </div>
 

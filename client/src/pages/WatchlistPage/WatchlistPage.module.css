@@ -13,7 +13,7 @@
 }
 
 .movie-item {
-  width: calc(18% - 20px);
+  width: calc(18% - 20px); /* Default width for larger screens */
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -60,7 +60,32 @@
   margin: 0;
 }
 
+/* Responsive Adjustments */
 
+/* Medium screens (tablets) */
+@media (max-width: 1024px) {
+  .movie-item {
+    width: calc(24% - 20px); /* Adjust width for medium screens */
+  }
+}
 
-  
-  
+/* Small screens (phones) */
+@media (max-width: 768px) {
+  .movie-item {
+    width: calc(45% - 20px); /* Two items per row on small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-item {
+    width: calc(100% - 20px); /* Full width for smaller phones */
+  }
+
+  .movie-title {
+    font-size: 14px; /* Slightly smaller font for titles */
+  }
+
+  .watchlist-container {
+    padding: 10px; /* Reduce padding for smaller screens */
+  }
+}

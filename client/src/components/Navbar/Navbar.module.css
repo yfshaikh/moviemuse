@@ -1,8 +1,28 @@
+nav {
+  width: 100%; /* Ensure nav takes full width */
+}
+
+nav ul {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: flex;
+  justify-content: center;
+  text-align: left;
+  font-size: 1.3rem;
+  width: 100%; /* Ensure list takes full width */
+}
+
+nav ul li {
+  margin: 0;
+  font-size: 1rem;
+}
+
 .navbar {
   display: flex;
   align-items: center;
   justify-content: space-between; 
-  padding: 10px 20px;
+  padding: 15px 20px;
   background-color: var(--light-grey); 
 }
 
@@ -143,4 +163,58 @@
 .button-container {
   display: flex;
   flex-direction: column;
+}
+
+/* Hamburger icon */
+.hamburger-icon {
+  display: none;
+  cursor: pointer;
+  position: absolute;
+  top: 15px;
+}
+
+/* Default styles for .navList */
+.navList {
+  display: flex;
+  align-items: center;
+  width: 100%; /* Ensure list items stretch across the navbar */
+  gap: 30px; 
+}
+
+/* Style for showing menu when hamburger menu is opened */
+.showMenu {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  text-align: center;
+  position: absolute;
+  top: 60px; /* Position below the navbar */
+  border-top: 1px solid grey;
+  left: 0;
+  background-color: var(--light-grey);
+  z-index: 1000;
+  padding: 1rem 0; /* Add padding to avoid edge contact */
+}
+
+.showMenu li {
+  margin: 1em 0;
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .navList {
+    display: none; /* Hide the nav items by default */
+  }
+
+  .navbar-logo {
+    display: none; 
+  }
+
+  .hamburger-icon {
+    display: block; /* Show hamburger icon */
+  }
+
+  .showMenu {
+    display: flex; /* Ensure menu is shown when toggled */
+  }
 }
