@@ -112,6 +112,23 @@
   color: lightgray;
 }
 
+.likeCount,
+.commentCount {
+  margin-left: 5px; /* Add space between the icon and the count */
+  font-size: 0.9rem; /* Adjust the font size */
+  color: #888; /* Match the color to your design */
+}
+
+.actionButtons button {
+  display: flex;
+  align-items: center; /* Align icon and count vertically */
+  gap: 5px; /* Add spacing between icon and text */
+}
+
+.heartIcon, .commentIcon, .trashIcon {
+  font-size: 20px;
+}
+
 .actionButtons {
   display: flex;
   gap: 10px;
@@ -223,5 +240,12 @@
   object-fit: cover;
   margin-right: 8px; 
   border: 2px solid #e0e0e0; 
+}
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .postInfoContainer {
+    width: 100%
+  }
 }
 

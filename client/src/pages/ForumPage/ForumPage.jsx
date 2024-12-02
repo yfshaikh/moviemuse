@@ -308,8 +308,6 @@ function ForumPage() {
                       className={styles['profile-pic']}
                     />
                     <span className={styles.authorName}>{post.author}</span>
-                    <span className={styles.postLikes}>{post.likes} Likes</span>
-                    <span className={styles.postComments}>{post.comments_count} Comments</span>
                   </div>
                   <div className={styles.actionButtons}>
                     <button 
@@ -320,13 +318,17 @@ function ForumPage() {
                         icon={likedPosts.includes(post.id) ? faHeartSolid : faHeartRegular} 
                         className={styles.heartIcon}
                       />
+                      <span className={styles.likeCount}>{post.likes}</span>
                     </button>
+                    
                     <button
                       className={styles.commentButton}
                       onClick={() => handleToggleComment(post.id)}
                     >
                       <FontAwesomeIcon icon={faCommentDots} className={styles.commentIcon} />
+                      <span className={styles.commentCount}>{post.comments_count}</span>
                     </button>
+                    
                     {/* Render trash bin button if isAdmin is true */}
                     {(isAdmin || user?.user_id === post.userID) && (
                       <button
@@ -337,6 +339,7 @@ function ForumPage() {
                       </button>
                     )}
                   </div>
+
                 </div>
               </div>
 
