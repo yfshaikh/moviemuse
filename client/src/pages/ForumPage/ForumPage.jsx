@@ -328,7 +328,7 @@ function ForumPage() {
                       <FontAwesomeIcon icon={faCommentDots} className={styles.commentIcon} />
                     </button>
                     {/* Render trash bin button if isAdmin is true */}
-                    {isAdmin && (
+                    {(isAdmin || user?.user_id === post.userID) && (
                       <button
                         className={styles.deleteButton}
                         onClick={() => handleDeletePost(post.id)}

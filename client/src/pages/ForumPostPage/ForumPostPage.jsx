@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import styles from './ForumPostPage.module.css';
 import Navbar from '../../components/Navbar/Navbar';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useUser } from '../../context/UserContext';
 import API_BASE_URL from '../../api';
 
 
 function ForumPostPage() {
   const { user } = useUser();
+  const navigate = useNavigate()
   const token = localStorage.getItem('token');
   const [postTitle, setPostTitle] = useState('');
   const [postContent, setPostContent] = useState('');
@@ -49,6 +50,7 @@ function ForumPostPage() {
       if (response.ok) {
         setSuccess(true);
         console.log('Forum post successful:', data);
+        navigate('/forum')
       } else {
         setError(data.error || 'Post failed');
         console.log('Forum post failed:', data);
